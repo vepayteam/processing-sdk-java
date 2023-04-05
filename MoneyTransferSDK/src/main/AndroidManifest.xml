@@ -6,8 +6,9 @@
 
     <application>
         <activity
-            android:name=".MoneyTransferActivity"
-            android:exported="false" />
+            android:name=".presentation.MoneyTransferActivity"
+            android:exported="false"
+            android:theme="@style/moneyTransferTheme"/>
     </application>
 
 </manifest>

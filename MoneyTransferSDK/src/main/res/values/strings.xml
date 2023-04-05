@@ -1,1 +1,10 @@
-<resources></resources>
+<resources>
+    <!-- CardPayFragment -->
+    <string name="card_pay_fragment_title">Введите данные карты</string>
+    <string name="card_pay_fragment_description">Так выглядят платежи через MoneyTransfer для покупателей в мобильном приложении. Платеж тестовый — деньги тратить не придется.</string>
+    <string name="card_pay_fragment_card_number">Номер карты</string>
+    <string name="card_pay_fragment_card_date">MM/YY</string>
+    <string name="card_pay_fragment_card_cvc">CVC</string>
+    <string name="card_pay_fragment_card_holder">Владелец карты</string>
+    <string name="card_pay_fragment_payment">Оплатить</string>
+</resources>

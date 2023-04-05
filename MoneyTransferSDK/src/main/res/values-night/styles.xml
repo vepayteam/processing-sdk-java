@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="moneyTransferTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/white</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <item name="colorPrimary">@color/dark_sky_blue</item>
+        <item name="colorPrimaryInverse">@color/white</item>
+        <item name="colorAccent">@color/dark_sky_blue</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorOnSurface">@color/white</item>
+
+    </style>
+
+    <style name="textTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/text_size_20sp</item>
+        <item name="lineHeight">28sp</item>
+    </style>
+
+    <style name="textRegular" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="lineHeight">18sp</item>
+    </style>
+
+    <style name="outlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="textAllCaps">false</item>
+        <item name="strokeColor">@color/light_blue_grey</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetTop">0dp</item>
+    </style>
+
+    <style name="unelevatedButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="textAllCaps">false</item>
+        <item name="backgroundTint">@color/dark_sky_blue</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetTop">0dp</item>
+    </style>
+
+    <style name="textInputLayout" parent="Widget.Design.TextInputLayout">
+        <item name="boxBackgroundMode">none</item>
+        <item name="hintEnabled">false</item>
+        <item name="materialThemeOverlay">@style/themeOverlayFilledPadding</item>
+    </style>
+
+    <style name="themeOverlayFilledPadding">
+        <item name="editTextStyle">@style/textInputLayout_padding</item>
+    </style>
+
+    <style name="textInputLayout_padding" parent="@style/Widget.Design.TextInputLayout">
+        <item name="android:paddingStart">@dimen/padding_0dp</item>
+        <item name="android:paddingEnd">@dimen/padding_0dp</item>
+    </style>
+
+    <style name="textInputEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:paddingTop">@dimen/padding_16dp</item>
+        <item name="android:paddingBottom">@dimen/padding_16dp</item>
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="android:paddingStart">@dimen/padding_2dp</item>
+        <item name="android:background">@drawable/edit_text_underline</item>
+    </style>
+
+</resources>
