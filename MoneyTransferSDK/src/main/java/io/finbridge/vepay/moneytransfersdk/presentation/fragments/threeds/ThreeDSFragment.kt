@@ -9,26 +9,18 @@ import androidx.fragment.app.viewModels
 import io.finbridge.vepay.moneytransfersdk.databinding.FragmentThreeDsBinding
 
 class ThreeDSFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = ThreeDSFragment()
-    }
-
-    private var _binding: FragmentThreeDsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentThreeDsBinding
     private val viewModel: ThreeDSViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentThreeDsBinding.inflate(inflater, container, false)
+        binding = FragmentThreeDsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
+    companion object {
+        fun newInstance() = ThreeDSFragment()
     }
-
 }

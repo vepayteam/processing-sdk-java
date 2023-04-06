@@ -71,4 +71,6 @@ dependencies {
     //Tinkoff decoro
     implementation 'ru.tinkoff.decoro:decoro:1.5.0'
 
+    //Card scanner
+    implementation 'io.card:android-sdk:5.5.1'
 }

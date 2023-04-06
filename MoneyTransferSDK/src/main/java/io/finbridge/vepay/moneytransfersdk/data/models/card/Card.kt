@@ -2,9 +2,11 @@ package io.finbridge.vepay.moneytransfersdk.data.models.card
 
 import android.text.TextUtils
 
-class Card {
-	companion object {
-		fun isValidNumber(cardNumber: String?): Boolean {
+data class Card(val cardNumber: String, val expDate: String, val cvv: String) {
+    companion object {
+        val EMPTY = Card(cardNumber = "", expDate = "", cvv = "")
+
+        fun isValidNumber(cardNumber: String?): Boolean {
 			return if (cardNumber == null) {
 				false
 			} else {
