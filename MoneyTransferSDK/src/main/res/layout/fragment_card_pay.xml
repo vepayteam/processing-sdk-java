@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/textTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_16dp"
+        android:text="@string/card_pay_fragment_title"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_card_number"
+        style="@style/textInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/til_card_data"
+        app:layout_constraintTop_toBottomOf="@id/title">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_card_number"
+            style="@style/textInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789 "
+            android:hint="@string/card_pay_fragment_card_number"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:nextFocusDown="@id/til_card_data"
+            tools:text="4242 4242 4242 4242" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/ic_ps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_8dp"
+        android:contentDescription="@string/card_pay_fragment_card_number"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/til_card_data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <ImageButton
+        android:id="@+id/btn_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_8dp"
+        android:background="@color/transparent"
+        android:contentDescription="@string/card_pay_fragment_card_number"
+        android:src="@drawable/ic_scan_20dp"
+        app:layout_constraintBottom_toTopOf="@id/til_card_data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_card_data"
+        style="@style/textInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_8dp"
+        app:layout_constraintBottom_toTopOf="@id/card_number_barrier"
+        app:layout_constraintEnd_toStartOf="@+id/til_card_cvv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_card_number">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_card_date"
+            style="@style/textInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789/"
+            android:hint="@string/card_pay_fragment_card_date"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:nextFocusDown="@id/edit_card_cvv"
+            tools:text="11/20" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_card_cvv"
+        style="@style/textInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/card_number_barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/til_card_data"
+        app:layout_constraintTop_toBottomOf="@id/til_card_number">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_card_cvv"
+            style="@style/textInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789"
+            android:hint="@string/card_pay_fragment_card_cvc"
+            android:inputType="number"
+            android:maxLength="3"
+            tools:text="111" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/card_number_barrier"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="title,til_card_number" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_pay"
+        style="@style/unelevatedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:text="@string/card_pay_fragment_payment"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/card_number_barrier" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
