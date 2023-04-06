@@ -1,51 +1,48 @@
 package io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay
 
 import android.app.Activity
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.textfield.TextInputEditText
+import io.card.payment.CardIOActivity
+import io.card.payment.CreditCard
 import io.finbridge.vepay.moneytransfersdk.R
 import io.finbridge.vepay.moneytransfersdk.data.models.card.Card
 import io.finbridge.vepay.moneytransfersdk.data.models.card.CardType
 import io.finbridge.vepay.moneytransfersdk.databinding.FragmentCardPayBinding
+import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.CardScannerActivityContract
 import ru.tinkoff.decoro.MaskDescriptor
 import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser
 import ru.tinkoff.decoro.watchers.DescriptorFormatWatcher
 
-
 class CardPayFragment : Fragment() {
 
-    companion object {
-        private const val CARD_NUMBER_MASK = "____ ____ ____ ____"
-        private const val CARD_DATE_MASK = "__/__"
-        private const val CARD_NUMBER_MAX_LENGTH = 19
-        fun newInstance() = CardPayFragment()
-    }
-
-    private var _binding: FragmentCardPayBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCardPayBinding
     private val viewModel: CardPayViewModel by viewModels()
+    private val getCardDataFromScanner =
+        registerForActivityResult(CardScannerActivityContract()) { data: Intent? ->
+            validateDataFromCardScanner(data)
+        }
 
     private val cardNumberFormatWatcher by lazy {
-        val descriptor = MaskDescriptor.ofRawMask(CARD_NUMBER_MASK)
-            .setTerminated(true)
+        val descriptor = MaskDescriptor.ofRawMask(CARD_NUMBER_MASK).setTerminated(true)
             .setForbidInputWhenFilled(true)
 
         DescriptorFormatWatcher(UnderscoreDigitSlotsParser(), descriptor)
     }
 
     private val cardDateFormatWatcher by lazy {
-        val descriptor = MaskDescriptor.ofRawMask(CARD_DATE_MASK)
-            .setTerminated(true)
+        val descriptor = MaskDescriptor.ofRawMask(CARD_DATE_MASK).setTerminated(true)
             .setForbidInputWhenFilled(true)
 
         DescriptorFormatWatcher(UnderscoreDigitSlotsParser(), descriptor)
@@ -55,7 +52,7 @@ class CardPayFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentCardPayBinding.inflate(inflater, container, false)
+        binding = FragmentCardPayBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -65,22 +62,16 @@ class CardPayFragment : Fragment() {
         cardNumberFormatWatcher.installOn(binding.editCardNumber)
         cardDateFormatWatcher.installOn(binding.editCardDate)
 
-        binding.editCardNumber.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(editableText: Editable?) {
-                val cardNumber = editableText.toString().replace(" ", "")
-                if (Card.isValidNumber(cardNumber)) {
-                    errorMode(false, binding.editCardNumber)
-                } else {
-                    errorMode(cardNumber.length == CARD_NUMBER_MAX_LENGTH, binding.editCardNumber)
-                }
-
-                updatePaymentSystemIcon(cardNumber)
+        binding.editCardNumber.doAfterTextChanged { editableText ->
+            val cardNumber = editableText.toString()
+            if (Card.isValidNumber(cardNumber)) {
+                errorMode(false, binding.editCardNumber)
+            } else {
+                errorMode(cardNumber.length == CARD_NUMBER_MAX_LENGTH, binding.editCardNumber)
             }
-        })
+
+            updatePaymentSystemIcon(cardNumber)
+        }
 
         binding.editCardNumber.setOnFocusChangeListener { _, hasFocus ->
             errorMode(
@@ -89,20 +80,13 @@ class CardPayFragment : Fragment() {
             )
         }
 
-        binding.editCardDate.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(editableText: Editable?) {
-
+        binding.editCardDate.doAfterTextChanged { editableText ->
                 val cardExp = editableText.toString()
                 if (Card.isValidDate(cardExp)) {
                     binding.editCardCvv.requestFocus()
                     errorMode(false, binding.editCardDate)
                 }
             }
-        })
 
         binding.editCardDate.setOnFocusChangeListener { _, hasFocus ->
             errorMode(
@@ -111,22 +95,16 @@ class CardPayFragment : Fragment() {
             )
         }
 
-        binding.editCardCvv.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(editableText: Editable?) {
+        binding.editCardCvv.doAfterTextChanged { editableText ->
                 errorMode(false, binding.editCardCvv)
 
                 if (Card.isValidCvv(editableText.toString())) {
-                    val inputMethodManager = requireActivity()
-                        .getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val inputMethodManager =
+                        requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     binding.editCardCvv.clearFocus()
                 }
             }
-        })
 
         binding.editCardCvv.setOnFocusChangeListener { _, hasFocus ->
             errorMode(
@@ -142,14 +120,35 @@ class CardPayFragment : Fragment() {
         }
 
         binding.btnScan.setOnClickListener {
-            //TODO сканирование карты
+            getCardDataFromScanner.launch(Unit)
         }
-
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
+    private fun validateDataFromCardScanner(data: Intent?) {
+        if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
+            val scanResult = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                data.getParcelableExtra<CreditCard>(
+                    CardIOActivity.EXTRA_SCAN_RESULT, CreditCard::class.java
+                )
+            } else {
+                data.getParcelableExtra<CreditCard>(CardIOActivity.EXTRA_SCAN_RESULT)
+            }
+            binding.editCardNumber.text?.append(scanResult?.cardNumber)
+            if (scanResult?.isExpiryValid == true) {
+                val month =
+                    if (scanResult.expiryMonth in CARD_ONE_SIGN_MIN_EXPIRY_MONTH..CARD_ONE_SIGN_MAX_EXPIRY_MONTH) {
+                        "$CARD_ONE_SIGN_ZERO${scanResult.expiryMonth}"
+                    } else {
+                        "${scanResult.expiryMonth}"
+                    }
+                val year = if (scanResult.expiryYear > TWENTY_CENTURY) {
+                    "${scanResult.expiryYear - TWENTY_CENTURY}"
+                } else {
+                    "${scanResult.expiryYear}"
+                }
+                binding.editCardDate.text?.append("$month$year")
+            }
+        }
     }
 
     private fun errorMode(isErrorMode: Boolean, editText: TextInputEditText) {
@@ -188,4 +187,14 @@ class CardPayFragment : Fragment() {
         return cardNumberIsValid && cardExpIsValid && cardCvvIsValid
     }
 
+    companion object {
+        private const val CARD_NUMBER_MASK = "____ ____ ____ ____"
+        private const val CARD_DATE_MASK = "__/__"
+        private const val CARD_NUMBER_MAX_LENGTH = 19
+        private const val CARD_ONE_SIGN_MIN_EXPIRY_MONTH = 1
+        private const val CARD_ONE_SIGN_MAX_EXPIRY_MONTH = 9
+        private const val CARD_ONE_SIGN_ZERO = 0
+        private const val TWENTY_CENTURY = 2000
+        fun newInstance() = CardPayFragment()
+    }
 }
