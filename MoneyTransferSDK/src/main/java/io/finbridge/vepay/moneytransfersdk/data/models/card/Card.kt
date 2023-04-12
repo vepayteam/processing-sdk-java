@@ -1,11 +1,13 @@
 package io.finbridge.vepay.moneytransfersdk.data.models.card
 
+import android.os.Parcelable
 import android.text.TextUtils
+import kotlinx.parcelize.Parcelize
 
-data class Card(val cardNumber: String, val expDate: String, val cvv: String) {
+@Parcelize
+data class Card(val cardNumber: String?, val expireDate: String?, val cardholderName: String?, val cvv: String?) :
+	Parcelable {
     companion object {
-        val EMPTY = Card(cardNumber = "", expDate = "", cvv = "")
-
         fun isValidNumber(cardNumber: String?): Boolean {
 			return if (cardNumber == null) {
 				false

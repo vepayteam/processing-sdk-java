@@ -7,4 +7,11 @@
     <string name="card_pay_fragment_card_cvc">CVC</string>
     <string name="card_pay_fragment_card_holder">Владелец карты</string>
     <string name="card_pay_fragment_payment">Оплатить</string>
+    <string name="card_pay_fragment_camera_scan">Сканирование с помощью камеры</string>
+    <string name="card_pay_fragment_nfc_scan">Сканирование с помощью NFC</string>
+    <string name="card_pay_fragment_scan_error">Ошибка во время сканирования</string>
+
+    <!-- CardNfcScannerActivity -->
+    <string name="card_nfc_scanner_activity_title">Включите NFC на вашем устройстве и прислоните карту к задней части смартфона</string>
+
 </resources>
