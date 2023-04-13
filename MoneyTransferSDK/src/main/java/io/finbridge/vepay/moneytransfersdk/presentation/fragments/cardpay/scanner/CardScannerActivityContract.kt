@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContract
 import io.card.payment.CardIOActivity
 import io.card.payment.CreditCard
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.dataValidation
+import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.getSafetyParcelableExtra
 import io.finbridge.vepay.moneytransfersdk.data.models.card.Card
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.cardscanners.ui.CardNfcScannerActivity
 
@@ -30,15 +31,19 @@ class CardScannerActivityContract() : ActivityResultContract<ScannerType, Card?>
         var scannedCardData: Card? = null
 
         if (intent != null && intent.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
-            val scanResult = intent.getParcelableExtra<CreditCard>(CardIOActivity.EXTRA_SCAN_RESULT)
+            val scanResult = intent.getSafetyParcelableExtra(
+                CardIOActivity.EXTRA_SCAN_RESULT,
+                CreditCard::class.java,
+            )
             scannedCardData = Card(
                 cardNumber = scanResult?.cardNumber,
-                expireDate = dataValidation(scanResult?.expiryMonth,scanResult?.expiryYear),
+                expireDate = dataValidation(scanResult?.expiryMonth, scanResult?.expiryYear),
                 cardholderName = scanResult?.cardholderName,
-                cvv = scanResult?.cvv
+                cvv = scanResult?.cvv,
             )
         } else if (intent != null && intent.hasExtra(ScannerType.NFC.name)) {
-            scannedCardData = intent.getParcelableExtra(ScannerType.NFC.name)
+            scannedCardData =
+                intent.getSafetyParcelableExtra(ScannerType.NFC.name, Card::class.java)
         }
         return scannedCardData
     }

@@ -13,6 +13,7 @@ import com.github.devnied.emvnfccard.model.EmvCard
 import com.github.devnied.emvnfccard.parser.EmvTemplate
 import io.finbridge.vepay.moneytransfersdk.R
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.dataValidation
+import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.getSafetyParcelableExtra
 import io.finbridge.vepay.moneytransfersdk.data.models.card.Card
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.NFCProvider
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.ScannerType
@@ -21,10 +22,10 @@ import java.util.Calendar
 
 
 class CardNfcScannerActivity : AppCompatActivity() {
-    var detectedTag: Tag? = null
-    var nfcAdapter: NfcAdapter? = null
-    var readTagFilters: Array<IntentFilter>? = null
-    var pendingIntent: PendingIntent? = null
+    private var detectedTag: Tag? = null
+    private var nfcAdapter: NfcAdapter? = null
+    private var readTagFilters: Array<IntentFilter>? = null
+    private var pendingIntent: PendingIntent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +49,15 @@ class CardNfcScannerActivity : AppCompatActivity() {
 
     private fun initializeNfcReader() {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-        detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
+        detectedTag = intent.getSafetyParcelableExtra(NfcAdapter.EXTRA_TAG, Tag::class.java)
 
         pendingIntent = PendingIntent.getActivity(
             applicationContext, 0,
             Intent(
                 this,
                 CardNfcScannerActivity::class.java
-            ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0
+            ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+            PendingIntent.FLAG_IMMUTABLE
         )
         val tagDetected = IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED)
         val filter = IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED)
@@ -81,8 +83,8 @@ class CardNfcScannerActivity : AppCompatActivity() {
 
     private fun readFromTag(intent: Intent): EmvCard? {
         var card: EmvCard? = null
-        val tag: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG) as Tag?
-        val isoDep = IsoDep.get(tag)
+        val tag: Tag? = intent.getSafetyParcelableExtra(NfcAdapter.EXTRA_TAG, Tag::class.java)
+        val isoDep: IsoDep = IsoDep.get(tag)
         val provider = NFCProvider()
         provider.setTagCom(isoDep)
         val config: EmvTemplate.Config = EmvTemplate.Config()

@@ -76,7 +76,7 @@ class CardPayFragment : Fragment() {
         }
 
         binding.btnScan.setOnClickListener {
-           if (isNfcEnable()) openScanTypeDialog()
+            if (isNfcEnable()) openScanTypeDialog()
             else getCardDataFromScanner.launch(ScannerType.CAMERA)
         }
     }
@@ -127,24 +127,26 @@ class CardPayFragment : Fragment() {
 
             if (Card.isValidCvv(editableText.toString())) {
                 val inputMethodManager =
-                    requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+                    activity?.let { it.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager }
+                inputMethodManager?.hideSoftInputFromWindow(view?.windowToken, 0)
                 binding.editCardCvv.clearFocus()
             }
         }
     }
 
     private fun putDataFromCardScanner(scannedCardData: Card?) {
-            binding.editCardNumber.setText(scannedCardData?.cardNumber)
-            binding.editCardDate.setText(scannedCardData?.expireDate)
+        binding.editCardNumber.setText(scannedCardData?.cardNumber)
+        binding.editCardDate.setText(scannedCardData?.expireDate)
     }
 
     private fun errorMode(isErrorMode: Boolean, editText: TextInputEditText) {
         if (isErrorMode) {
-            editText.setTextColor(ContextCompat.getColor(requireContext(), R.color.pale_red))
+            context?.let { editText.setTextColor(ContextCompat.getColor(it, R.color.pale_red)) }
             editText.setBackgroundResource(R.drawable.edit_text_underline_error)
         } else {
-            editText.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_blue_grey))
+            context?.let {
+                editText.setTextColor(ContextCompat.getColor(it, R.color.light_blue_grey))
+            }
             editText.setBackgroundResource(R.drawable.edit_text_underline)
         }
     }
@@ -192,10 +194,13 @@ class CardPayFragment : Fragment() {
     }
 
     private fun showErrorScanningToast() {
-        Toast.makeText(requireContext(),R.string.card_pay_fragment_scan_error,Toast.LENGTH_LONG).show()
+        context?.let {
+            Toast.makeText(it, R.string.card_pay_fragment_scan_error, Toast.LENGTH_LONG).show()
+        }
     }
+
     private fun isNfcEnable(): Boolean {
-        return requireContext().packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
+        return context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_NFC) == true
     }
 
     companion object {
