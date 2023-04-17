@@ -14,7 +14,7 @@ import com.github.devnied.emvnfccard.parser.EmvTemplate
 import io.finbridge.vepay.moneytransfersdk.R
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.dataValidation
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.getSafetyParcelableExtra
-import io.finbridge.vepay.moneytransfersdk.data.models.card.Card
+import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.Card
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.NFCProvider
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.ScannerType
 import java.util.Date

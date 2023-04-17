@@ -15,9 +15,10 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.textfield.TextInputEditText
+import dagger.hilt.android.AndroidEntryPoint
 import io.finbridge.vepay.moneytransfersdk.R
-import io.finbridge.vepay.moneytransfersdk.data.models.card.Card
-import io.finbridge.vepay.moneytransfersdk.data.models.card.CardType
+import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.Card
+import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardType
 import io.finbridge.vepay.moneytransfersdk.databinding.FragmentCardPayBinding
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.CardScannerActivityContract
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.ScannerType
@@ -25,6 +26,7 @@ import ru.tinkoff.decoro.MaskDescriptor
 import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser
 import ru.tinkoff.decoro.watchers.DescriptorFormatWatcher
 
+@AndroidEntryPoint
 class CardPayFragment : Fragment() {
 
     private lateinit var binding: FragmentCardPayBinding
@@ -94,6 +96,12 @@ class CardPayFragment : Fragment() {
                 binding.editCardDate
             )
         }
+        binding.editCardHolder.setOnFocusChangeListener { _, hasFocus ->
+            errorMode(
+                !hasFocus && !Card.isValidCardHolder(binding.editCardHolder.text.toString()),
+                binding.editCardHolder
+            )
+        }
         binding.editCardNumber.setOnFocusChangeListener { _, hasFocus ->
             errorMode(
                 !hasFocus && !Card.isValidNumber(binding.editCardNumber.text.toString()),
@@ -117,8 +125,15 @@ class CardPayFragment : Fragment() {
         binding.editCardDate.doAfterTextChanged { editableText ->
             val cardExp = editableText.toString()
             if (Card.isValidDate(cardExp)) {
-                binding.editCardCvv.requestFocus()
+                binding.editCardHolder.requestFocus()
                 errorMode(false, binding.editCardDate)
+            }
+        }
+
+        binding.editCardHolder.doAfterTextChanged { editableText ->
+            val cardHolder = editableText.toString()
+            if (Card.isValidCardHolder(cardHolder)) {
+                errorMode(false, binding.editCardHolder)
             }
         }
 

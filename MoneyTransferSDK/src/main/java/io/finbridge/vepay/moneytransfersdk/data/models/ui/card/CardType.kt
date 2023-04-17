@@ -1,4 +1,4 @@
-package io.finbridge.vepay.moneytransfersdk.data.models.card
+package io.finbridge.vepay.moneytransfersdk.data.models.ui.card
 
 import io.finbridge.vepay.moneytransfersdk.R
 

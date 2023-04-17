@@ -17,9 +17,11 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_card_number"
         style="@style/textInputLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/til_card_data"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintBottom_toTopOf="@id/card_number_barrier"
         app:layout_constraintTop_toBottomOf="@id/title">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -42,8 +44,8 @@
         android:layout_marginEnd="@dimen/margin_8dp"
         android:contentDescription="@string/card_pay_fragment_card_number"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@id/til_card_data"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/card_number_barrier"
+        app:layout_constraintEnd_toEndOf="@id/til_card_number"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
     <ImageButton
@@ -54,8 +56,8 @@
         android:background="@color/transparent"
         android:contentDescription="@string/card_pay_fragment_card_number"
         android:src="@drawable/ic_scan_20dp"
-        app:layout_constraintBottom_toTopOf="@id/til_card_data"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/card_number_barrier"
+        app:layout_constraintEnd_toEndOf="@id/til_card_number"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
 
@@ -66,9 +68,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_8dp"
         app:layout_constraintBottom_toTopOf="@id/card_number_barrier"
-        app:layout_constraintEnd_toStartOf="@+id/til_card_cvv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_card_number">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/title">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_card_date"
@@ -79,8 +81,31 @@
             android:hint="@string/card_pay_fragment_card_date"
             android:imeOptions="actionNext"
             android:inputType="number"
-            android:nextFocusDown="@id/edit_card_cvv"
+            android:nextFocusDown="@id/edit_card_holder"
             tools:text="11/20" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_card_holder"
+        style="@style/textInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintBottom_toTopOf="@id/button_pay"
+        app:layout_constraintTop_toBottomOf="@id/card_number_barrier">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_card_holder"
+            style="@style/textInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+            android:hint="@string/card_pay_fragment_card_holder"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:nextFocusDown="@id/til_card_cvv"
+            tools:text="VASUA PUPKIN" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -88,10 +113,10 @@
         style="@style/textInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/card_number_barrier"
+        app:layout_constraintBottom_toTopOf="@id/button_pay"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/til_card_data"
-        app:layout_constraintTop_toBottomOf="@id/til_card_number">
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/card_number_barrier">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_card_cvv"
@@ -106,12 +131,26 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.7"
+        android:orientation="vertical" />
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/card_number_barrier"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="title,til_card_number" />
+        app:constraint_referenced_ids="title,til_card_number,til_card_data" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/card_holder_barrier"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="til_card_holder,til_card_cvv" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_pay"
@@ -121,6 +160,6 @@
         android:layout_marginTop="@dimen/margin_16dp"
         android:text="@string/card_pay_fragment_payment"
         android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/card_number_barrier" />
+        app:layout_constraintTop_toBottomOf="@id/card_holder_barrier" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

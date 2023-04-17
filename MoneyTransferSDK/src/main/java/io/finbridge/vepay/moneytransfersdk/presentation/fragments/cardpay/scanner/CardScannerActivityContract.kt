@@ -7,7 +7,7 @@ import io.card.payment.CardIOActivity
 import io.card.payment.CreditCard
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.dataValidation
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.getSafetyParcelableExtra
-import io.finbridge.vepay.moneytransfersdk.data.models.card.Card
+import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.Card
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.cardscanners.ui.CardNfcScannerActivity
 
 class CardScannerActivityContract() : ActivityResultContract<ScannerType, Card?>() {
