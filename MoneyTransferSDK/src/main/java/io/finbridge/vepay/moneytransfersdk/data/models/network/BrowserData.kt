@@ -1,7 +1,9 @@
 package io.finbridge.vepay.moneytransfersdk.data.models.network
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class BrowserData(
     @SerialName("screenHeight") val screenHeight: Int?,
     @SerialName("screenWidth") val screenWidth: Int?,
