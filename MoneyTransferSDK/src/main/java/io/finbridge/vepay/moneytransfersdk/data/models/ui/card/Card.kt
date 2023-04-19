@@ -1,4 +1,4 @@
-package io.finbridge.vepay.moneytransfersdk.data.models.card
+package io.finbridge.vepay.moneytransfersdk.data.models.ui.card
 
 import android.os.Parcelable
 import android.text.TextUtils
@@ -63,6 +63,14 @@ data class Card(
 
         fun isValidCvv(cvv: String?): Boolean {
             return (cvv?.length in 3..3)
+        }
+
+        fun isValidCardHolder(cardHolder: String?): Boolean {
+            var result = false
+            if (cardHolder != null) {
+                if (cardHolder.length > 5 && cardHolder.contains(" ")) result = true
+            }
+            return result
         }
 
         private fun prepareCardNumber(cardNumber: String): String {

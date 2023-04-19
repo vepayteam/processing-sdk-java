@@ -45,6 +45,7 @@
         <item name="android:textColorHint">@color/grey</item>
         <item name="hintEnabled">false</item>
         <item name="materialThemeOverlay">@style/themeOverlayFilledPadding</item>
+        <item name="android:padding">@dimen/padding_8dp</item>
     </style>
 
     <style name="themeOverlayFilledPadding">
