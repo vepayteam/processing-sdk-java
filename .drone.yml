@@ -1,0 +1,112 @@
+---
+kind: pipeline
+type: docker
+name: build-deploy-development-pull-request
+
+platform:
+  os: linux
+  arch: amd64
+
+concurrency:
+  limit: 2
+
+workspace:
+  path: /drone/src
+
+steps:
+- name: git-cleanup-branch
+  pull: if-not-exists
+  image: alpine/git:v2.40.1
+  commands:
+  - git reset --hard origin/${DRONE_TARGET_BRANCH}
+  - git checkout -b ${DRONE_SOURCE_BRANCH} ${DRONE_COMMIT}
+
+- name: check-for-conventional-commits
+  pull: if-not-exists
+  image: aevea/commitsar:0.15.0
+  commands:
+  - commitsar -v -s
+
+- name: notify-conventional-commits-dcd24bf89c55dfa36844603c62d8b7dd
+  pull: always
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - export BUILD_STATUS=$$(cat /run/drone/env 2>/dev/null | grep DRONE_STAGE_STATUS | cut -d '=' -f 2 | tr -d \")
+  - gitea-status -t "conventional-commits" -m "$${BUILD_STATUS:-$$DRONE_STAGE_STATUS}" -s "$${BUILD_STATUS:-$$DRONE_STAGE_STATUS}" -u "https://www.conventionalcommits.org/en/v1.0.0/#why-use-conventional-commits"
+  environment:
+    GITEA_TOKEN:
+      from_secret: GITEA_TOKEN
+  when:
+    status:
+    - failure
+    - success
+
+- name: sonarqube-scanner
+  pull: always
+  image: registry.vepay.dev/drone/sonar-scanner:node-18
+  settings:
+    sonar_host: https://sonarqube.vepay.dev
+    sonar_loglevel: INFO
+    sonar_reference_branch: ${DRONE_TARGET_BRANCH}
+  environment:
+    SONAR_TOKEN:
+      from_secret: SONAR_TOKEN
+
+image_pull_secrets:
+- dockerconfig
+
+trigger:
+  branch:
+  - develop
+  event:
+  - pull_request
+
+---
+kind: pipeline
+type: docker
+name: build-deploy-development-push
+
+platform:
+  os: linux
+  arch: amd64
+
+concurrency:
+  limit: 2
+
+workspace:
+  path: /drone/src
+
+steps:
+- name: sonarqube-scanner
+  pull: always
+  image: registry.vepay.dev/drone/sonar-scanner:node-18
+  settings:
+    sonar_host: https://sonarqube.vepay.dev
+    sonar_loglevel: INFO
+    sonar_reference_branch: ${DRONE_TARGET_BRANCH}
+  environment:
+    SONAR_TOKEN:
+      from_secret: SONAR_TOKEN
+
+image_pull_secrets:
+- dockerconfig
+
+trigger:
+  branch:
+  - develop
+  event:
+  - push
+
+---
+kind: secret
+name: GITEA_TOKEN
+
+get:
+  path: drone-die6s
+  name: gitea_token
+
+---
+kind: signature
+hmac: 2fa736a83d72a520a8affb32e24839f1ad9cb7eb4fa897cd465397c9db84d352
+
+...
