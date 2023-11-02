@@ -40,6 +40,9 @@
     <dimen name="margin_32dp">32dp</dimen>
     <dimen name="margin_38dp">38dp</dimen>
     <dimen name="margin_44dp">44dp</dimen>
+    <dimen name="margin_63dp">63dp</dimen>
+    <dimen name="margin_85dp">85dp</dimen>
+    <dimen name="margin_100dp">100dp</dimen>
 
     <!--    text sizes   -->
     <dimen name="text_size_2sp">2sp</dimen>
@@ -58,11 +61,23 @@
     <dimen name="text_size_28sp">28sp</dimen>
     <dimen name="text_size_30sp">30sp</dimen>
     <dimen name="text_size_32sp">32sp</dimen>
+    <dimen name="text_size_34sp">34sp</dimen>
     <dimen name="text_size_38sp">38sp</dimen>
     <dimen name="text_size_44sp">44sp</dimen>
 
     <!--    ThreeDS fragment   -->
     <dimen name="close_button_corner_radius">10dp</dimen>
     <dimen name="close_button_size">32dp</dimen>
+
+    <!--    YourCardFragment   -->
+    <dimen name="card_corner_radius_30dp">30dp</dimen>
+    <dimen name="item_card_size_180dp">180dp</dimen>
+    <dimen name="card_svv_Info_height_size_300dp">300dp</dimen>
+    <dimen name="card_corner_radius_20dp">20dp</dimen>
+    <dimen name="cvv_card_width_104dp">104dp</dimen>
+    <dimen name="cvv_card_height_64dp">64dp</dimen>
+    <dimen name="bank_info_height_250dp">250dp</dimen>
+    <dimen name="bt_transfer_pay_height_60dp">60dp</dimen>
+    <dimen name="view_height_40dp">40dp</dimen>
 
 </resources>

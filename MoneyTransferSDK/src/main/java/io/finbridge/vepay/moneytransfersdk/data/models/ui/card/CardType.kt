@@ -38,4 +38,14 @@ enum class CardType {
 		JCB -> R.drawable.ic_ps_jcb_24dp
 		else -> null
 	}
+
+	fun getCardInfoIconRes(): Int? = when (this) {
+		VISA -> R.drawable.ic_visa_40dp_24dp
+		MASTERCARD -> R.drawable.ic_master
+		MAESTRO -> R.drawable.ic_master
+		MIR -> R.drawable.ic_mir
+		JCB -> R.drawable.ic_jcb
+		else -> null
+	}
+
 }
