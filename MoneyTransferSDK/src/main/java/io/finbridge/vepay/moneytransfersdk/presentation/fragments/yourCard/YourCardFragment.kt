@@ -122,7 +122,6 @@ class YourCardFragment : Fragment() {
                 if (visibilityInfoCard) {
                     transformSecurityCardInfo()
                     visibilityInfoCard = false
-
                 } else {
                     editCardNumber.transformationMethod =
                         HideReturnsTransformationMethod.getInstance()
@@ -294,9 +293,8 @@ class YourCardFragment : Fragment() {
 
                     errorMode(false) {
                         viewModel.findCard { card ->
-                            if (Card.isValidNumber(editCardNumber.text.toString()) && Card.isValidDate(
-                                    editCardDate.text.toString()
-                                )
+                            if (Card.isValidNumber(editCardNumber.text.toString())
+                                && Card.isValidDate(editCardDate.text.toString())
                             ) {
                                 correctCardState(card)
                             }
@@ -317,9 +315,9 @@ class YourCardFragment : Fragment() {
     private fun activationButtom() {
         with(binding) {
             btTransferPay.isEnabled =
-                Card.isValidNumber(editCardNumber.text.toString()) && Card.isValidDate(editCardDate.text.toString()) && Card.isValidCvv(
-                    editCardCvv.text.toString()
-                )
+                Card.isValidNumber(editCardNumber.text.toString())
+                        && Card.isValidDate(editCardDate.text.toString())
+                        && Card.isValidCvv(editCardCvv.text.toString())
         }
     }
 

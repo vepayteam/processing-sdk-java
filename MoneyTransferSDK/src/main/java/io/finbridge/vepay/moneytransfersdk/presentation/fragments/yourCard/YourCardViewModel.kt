@@ -2,7 +2,6 @@ package io.finbridge.vepay.moneytransfersdk.presentation.fragments.yourCard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.transition.Visibility
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.finbridge.vepay.moneytransfersdk.R
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.Card
@@ -14,14 +13,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class YourCardViewModel @Inject constructor() : ViewModel() {
-    private val tempCard = mutableSetOf<CardUi>(CardUi(
-        id = ID_ADD,
-        card = Card("", "", "", ""),
-        name = "Другой банк",
-        bankName = "Введите данные карты",
-        iconRes = R.drawable.ic_add,
-        isActive = false
-    ))
+    private val tempCard = mutableSetOf(
+        CardUi(
+            id = ID_ADD,
+            bankName = "Введите данные карты",
+            iconRes = R.drawable.ic_add
+        )
+    )
 
     private val _cardModel: MutableStateFlow<List<CardUi>> = MutableStateFlow(
         listOf(
@@ -49,20 +47,10 @@ class YourCardViewModel @Inject constructor() : ViewModel() {
                 iconRes = R.drawable.ic_sber,
                 isActive = false
             ),
-//            CardUi( не нашел пример валидной карты райфайсен
-//                id = 3,
-//                card = Card("4627 3232 2321 4444", "08/25", "test4", "333"),
-//                name = "testName4",
-//                bankName = "Райффайзен Банк",
-//                iconRes = R.drawable.ic_raif,
-//                isActive = false
-//            ),
             CardUi(
                 id = ID_ADD,
-                card = Card("", "", "", ""),
-                name = "Другой банк",
-                bankName = "Введите данные карты",
                 iconRes = R.drawable.ic_add,
+                bankName = "Введите данные карты",
                 isActive = false
             )
         )
@@ -142,7 +130,7 @@ class YourCardViewModel @Inject constructor() : ViewModel() {
                 }
             }
             if (updatedItem?.id != ID_ADD) {
-               if (Card.isValidDate(date))  _cardModel.emit(stationItems)
+                if (Card.isValidDate(date)) _cardModel.emit(stationItems)
             } else {
                 //TODO ADD CardModel LOGICAL
             }
@@ -253,7 +241,7 @@ class YourCardViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun findCard(action:(card:CardUi)->Unit) {
+    fun findCard(action: (card: CardUi) -> Unit) {
         viewModelScope.launch {
             val stationItems = mutableListOf<CardUi>()
             _cardModel.value.forEach {

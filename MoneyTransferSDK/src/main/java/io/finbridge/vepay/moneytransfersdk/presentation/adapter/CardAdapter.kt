@@ -1,26 +1,20 @@
 package io.finbridge.vepay.moneytransfersdk.presentation.adapter
 
 import android.content.Context
-import android.graphics.PorterDuff
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsetsController
 import android.widget.ImageView
-import androidx.core.view.isInvisible
-import androidx.transition.Visibility
 import androidx.viewbinding.ViewBinding
-import io.finbridge.vepay.moneytransfersdk.R
-import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardBank
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardUi
 import io.finbridge.vepay.moneytransfersdk.databinding.ItemCardActiveBinding
 import io.finbridge.vepay.moneytransfersdk.databinding.ItemCardBinding
 import io.finbridge.vepay.moneytransfersdk.presentation.base.BaseAdapter
 import io.finbridge.vepay.moneytransfersdk.presentation.base.BaseViewHolder
 
-class CardAdapter(private val onClick: (data: CardUi, position: Int) -> Unit, private val controllerColor: (regtadle: ImageView, color:Int) -> Unit) :
-    BaseAdapter<ViewBinding, CardUi, BaseViewHolder<CardUi, ViewBinding>>() {
+class CardAdapter(
+    private val onClick: (data: CardUi, position: Int) -> Unit,
+    private val controllerColor: (rectangle: ImageView, color: Int) -> Unit,
+) : BaseAdapter<ViewBinding, CardUi, BaseViewHolder<CardUi, ViewBinding>>() {
 
     inner class CardHolder(private val binding: ViewBinding) :
         BaseViewHolder<CardUi, ViewBinding>(binding) {

@@ -4,12 +4,12 @@ import android.text.method.PasswordTransformationMethod
 import android.view.View
 
 open class TransformationMethodDate : PasswordTransformationMethod() {
+
     override fun getTransformation(source: CharSequence, view: View): CharSequence {
         return PasswordCharSequence(source)
     }
 
-    class PasswordCharSequence(private val mSource: CharSequence) :
-        CharSequence {
+    class PasswordCharSequence(private val mSource: CharSequence) : CharSequence {
 
         override val length: Int
             get() = mSource.length
