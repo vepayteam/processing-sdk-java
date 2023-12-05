@@ -2,7 +2,6 @@ package io.finbridge.vepay.moneytransfersdk.data.models.ui.card
 
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import io.finbridge.vepay.moneytransfersdk.R
 import io.finbridge.vepay.moneytransfersdk.core.utils.emptyString
 import io.finbridge.vepay.moneytransfersdk.presentation.base.BaseAdapterTypes
 

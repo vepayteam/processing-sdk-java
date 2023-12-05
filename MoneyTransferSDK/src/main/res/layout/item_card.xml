@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_4dp"
         android:background="@drawable/corner_radius_30"
+        app:cardBackgroundColor="@color/ice"
         app:cardCornerRadius="@dimen/card_corner_radius_30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,7 +20,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="@dimen/item_card_size_180dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/corner_radius_30">
 
             <ImageView
                 android:id="@+id/imgLogo"

@@ -78,7 +78,9 @@ class NetworkModule {
         invoiceRepository
 
     @Provides
-    fun getPaymentRepository(paymentRepository: PaymentRepositoryImpl): PaymentRepository =
+    fun getPaymentRepository(
+        paymentRepository: PaymentRepositoryImpl,
+    ): PaymentRepository =
         paymentRepository
 
     @Provides

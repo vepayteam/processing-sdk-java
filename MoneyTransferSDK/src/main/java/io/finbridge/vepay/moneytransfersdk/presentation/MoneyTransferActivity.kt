@@ -1,10 +1,9 @@
 package io.finbridge.vepay.moneytransfersdk.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.finbridge.vepay.moneytransfersdk.R
-import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.CardPayFragment
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.yourCard.YourCardFragment
 
 @AndroidEntryPoint

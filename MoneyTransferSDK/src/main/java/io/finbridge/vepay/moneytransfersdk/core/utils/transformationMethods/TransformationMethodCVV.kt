@@ -15,7 +15,7 @@ open class TransformationMethodCVV : PasswordTransformationMethod() {
             get() = mSource.length
 
         override fun get(index: Int): Char {
-            return '0'
+            return '•'
         }
 
         override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {

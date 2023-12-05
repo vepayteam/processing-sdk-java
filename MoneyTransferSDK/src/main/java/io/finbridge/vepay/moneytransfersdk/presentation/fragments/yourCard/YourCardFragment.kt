@@ -46,9 +46,6 @@ class YourCardFragment : Fragment() {
 
         DescriptorFormatWatcher(UnderscoreDigitSlotsParser(), descriptor)
     }
-    private var isEventAutoActivation: Boolean = true
-
-    private var visibilityInfoCard: Boolean = false
     private val cardDateFormatWatcher by lazy {
         val descriptor = MaskDescriptor.ofRawMask(CARD_DATE_MASK).setTerminated(true)
             .setForbidInputWhenFilled(true)
@@ -72,14 +69,10 @@ class YourCardFragment : Fragment() {
             )
 
         },
-        onClick = { item, position ->
-            isEventAutoActivation = false
-            binding.rcCard.scrollToPosition(position)
-            viewModel.activationCard(item)
-            updateCardInfo(item)
-
-        }
+        onClick = { item, position -> }
     )
+    private var isEventAutoActivation: Boolean = true
+    private var visibilityInfoCard: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -104,7 +97,6 @@ class YourCardFragment : Fragment() {
         lifecycleListener()
         initClickListeners()
         linkedText()
-
     }
 
     private fun linkedText() {
@@ -136,6 +128,9 @@ class YourCardFragment : Fragment() {
                 editCardDate.text?.let { it1 -> binding.editCardDate.setSelection(it1.length) }
                 editCardCvv.text?.let { it1 -> binding.editCardCvv.setSelection(it1.length) }
             }
+            checkBox.setOnClickListener {
+                activationButton()
+            }
         }
     }
 
@@ -152,6 +147,9 @@ class YourCardFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.cardModel.collect {
                 cardAdapter.submitList(it)
+                if (it.isEmpty()) {
+                    binding.rcCard.isVisible = false
+                }
             }
         }
     }
@@ -195,8 +193,6 @@ class YourCardFragment : Fragment() {
         if (isErrorMode) {
             context?.let {
                 viewModel.editColor(R.color.light_blue_grey)
-                binding.imgLogoBank.setImageResource(R.drawable.ic_error)
-
             }
         } else action.invoke()
     }
@@ -213,10 +209,7 @@ class YourCardFragment : Fragment() {
         updateColor(bankInfo)
         with(binding) {
             imgLogoBank.setImageResource(logo)
-            if (cardNumber.isEmpty() || icon == null) {
-                viewModel.editIcon(R.drawable.ic_error)
-
-            } else {
+            if (cardNumber.isNotEmpty() && icon != null) {
                 viewModel.editIcon(icon)
             }
 
@@ -252,9 +245,9 @@ class YourCardFragment : Fragment() {
     private fun initDoAfterTextChanged() {
         with(binding) {
             editCardNumber.doAfterTextChanged { editableText ->
-                activationButtom()
+                activationButton()
                 val cardNumber = editableText.toString()
-                if (Card.isValidNumber(cardNumber)) {
+                if (Card.isValidNumber(cardNumber) || editCardNumber.hasFocus()) {
                     errorMode(false)
                     if (cardNumber.length == CARD_NUMBER_MAX_LENGTH)
                         viewModel.editCardNumber(cardNumber)
@@ -267,9 +260,9 @@ class YourCardFragment : Fragment() {
             }
 
             editCardDate.doAfterTextChanged { editableText ->
-                activationButtom()
+                activationButton()
                 val cardExp = editableText.toString()
-                if (Card.isValidDate(cardExp)) {
+                if (Card.isValidDate(cardExp) || editCardDate.hasFocus()) {
                     errorMode(false) {
                         viewModel.findCard { card ->
                             if (Card.isValidNumber(editCardNumber.text.toString()) && Card.isValidCvv(
@@ -287,10 +280,9 @@ class YourCardFragment : Fragment() {
             }
 
             editCardCvv.doAfterTextChanged { editableText ->
-                activationButtom()
+                activationButton()
                 val cvv = editableText.toString()
-                if (Card.isValidCvv(cvv)) {
-
+                if (Card.isValidCvv(cvv) || editCardCvv.hasFocus()) {
                     errorMode(false) {
                         viewModel.findCard { card ->
                             if (Card.isValidNumber(editCardNumber.text.toString())
@@ -306,18 +298,17 @@ class YourCardFragment : Fragment() {
                 } else {
                     errorMode(true)
                 }
-
             }
-
         }
     }
 
-    private fun activationButtom() {
+    private fun activationButton() {
         with(binding) {
             btTransferPay.isEnabled =
                 Card.isValidNumber(editCardNumber.text.toString())
                         && Card.isValidDate(editCardDate.text.toString())
                         && Card.isValidCvv(editCardCvv.text.toString())
+                        && checkBox.isChecked
         }
     }
 
@@ -347,7 +338,7 @@ class YourCardFragment : Fragment() {
     private fun updateColor(bankInfo: CardBank) {
         when (bankInfo) {
             CardBank.UNKNOWN -> {
-                viewModel.editColor(R.color.unknown_card)
+                viewModel.editColor(R.color.strawberry)
             }
 
             CardBank.ALFA_BANK -> {
@@ -366,24 +357,21 @@ class YourCardFragment : Fragment() {
                 viewModel.editColor(R.color.raifasenk_card)
             }
 
-            else -> viewModel.editColor(R.color.unknown_card)
+            else -> viewModel.editColor(R.color.strawberry)
         }
     }
 
     private fun getPercentage(view: View): Double {
-
         val itemRect = Rect()
         val isParentViewEmpty = view.getLocalVisibleRect(itemRect)
-
         val visibleWidth = itemRect.width().toDouble()
         val width = view.measuredWidth
-
         val viewVisibleHeightPercentage = visibleWidth / width * 100
 
-        if (isParentViewEmpty) {
-            return viewVisibleHeightPercentage
+        return if (isParentViewEmpty) {
+            viewVisibleHeightPercentage
         } else {
-            return 0.0
+            0.0
         }
     }
 
