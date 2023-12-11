@@ -1,10 +1,10 @@
 package io.finbridge.vepay.moneytransfersdk.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.finbridge.vepay.moneytransfersdk.R
-import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.CardPayFragment
+import io.finbridge.vepay.moneytransfersdk.presentation.fragments.yourCard.YourCardFragment
 
 @AndroidEntryPoint
 class MoneyTransferActivity : AppCompatActivity() {
@@ -14,7 +14,7 @@ class MoneyTransferActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, CardPayFragment.newInstance())
+                .replace(R.id.fragment_container, YourCardFragment.newInstance())
                 .commit()
         }
     }
