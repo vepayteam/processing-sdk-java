@@ -11,9 +11,9 @@ import javax.inject.Inject
 
 class GetPaymentApi @Inject constructor(
     private val httpClient: HttpClient,
-) : KtorApiRequest<Int, Response<PaymentResponse>> {
+) : KtorApiRequest<String, Response<PaymentResponse>> {
 
-    override suspend fun execute(id: Int): Response<PaymentResponse> {
+    override suspend fun execute(id: String): Response<PaymentResponse> {
         return getApiContentSafeOperation<PaymentResponse> {
             httpClient.get("invoices/$id/payments") {
                 parameter("id", id)

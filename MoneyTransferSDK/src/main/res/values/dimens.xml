@@ -16,7 +16,7 @@
     <dimen name="margin_24dp">24dp</dimen>
     <dimen name="margin_32dp">32dp</dimen>
     <dimen name="margin_63dp">63dp</dimen>
-    <dimen name="margin_85dp">85dp</dimen>
+    <dimen name="margin_83dp">83dp</dimen>
     <dimen name="margin_100dp">100dp</dimen>
 
     <!--    text sizes   -->
@@ -37,6 +37,7 @@
     <dimen name="card_corner_radius_20dp">20dp</dimen>
     <dimen name="cvv_card_width_104dp">104dp</dimen>
     <dimen name="cvv_card_height_64dp">64dp</dimen>
+    <dimen name="cvv_card_height_76dp">76dp</dimen>
     <dimen name="bank_info_height_250dp">250dp</dimen>
     <dimen name="view_height_40dp">40dp</dimen>
 

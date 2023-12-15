@@ -10,11 +10,11 @@ plugins {
 
 android {
     namespace 'io.finbridge.vepay.moneytransfersdk'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 24
-        targetSdk 33
+        targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -41,19 +41,19 @@ android {
 dependencies {
 
     //Core
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
 
     //Material
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
 
     //UI
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.fragment:fragment-ktx:1.5.7'
+    implementation 'androidx.fragment:fragment-ktx:1.6.2'
 
     //Lifecycle
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
 
     //Ktor
     implementation "io.ktor:ktor-client-okhttp:2.2.4"
@@ -70,6 +70,9 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    testImplementation "io.ktor:ktor-client-mock:2.2.4"
+    androidTestImplementation "io.mockk:mockk-agent:1.13.4"
+    testApi "io.mockk:mockk-android:1.13.4"
 
     //Tinkoff decoro
     implementation 'ru.tinkoff.decoro:decoro:1.5.0'
@@ -79,4 +82,9 @@ dependencies {
 
     //NFC scanner
     implementation 'com.github.devnied.emvnfccard:library:3.0.1'
+    
+    //Arrow
+    implementation 'io.arrow-kt:arrow-core:1.2.0'
+    implementation 'io.arrow-kt:arrow-fx-stm:1.2.0'
+    implementation 'io.arrow-kt:arrow-fx-coroutines:1.2.0'
 }

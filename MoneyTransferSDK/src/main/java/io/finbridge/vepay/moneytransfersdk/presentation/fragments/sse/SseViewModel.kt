@@ -64,7 +64,6 @@ class SseViewModel @Inject constructor() : ViewModel() {
 
     companion object {
         private const val TEST_URL =
-            "https://feat-vpbc-1931-processing.backend.vepay.cf/h2hapi/v1/stream/sse?uuid=fffec8fa-ca7f-4e74-81c7-26fc8095bd2d"
+            "https://develop-processing.backend.vepay.cf/h2hapi/v1/stream/sse?uuid=83b87bd5-1f51-4766-8aa5-0e08f9e1460a"
     }
 }
-
