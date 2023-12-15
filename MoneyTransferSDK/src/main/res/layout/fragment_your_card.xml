@@ -47,7 +47,7 @@
                 android:id="@+id/constraintLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_85dp"
+                android:layout_marginTop="@dimen/margin_83dp"
                 android:background="@color/white"
                 android:elevation="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -82,52 +82,45 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent">
 
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                            <FrameLayout
+                                android:layout_width="@dimen/cvv_card_width_104dp"
+                                android:layout_height="@dimen/cvv_card_height_76dp"
                                 android:background="@color/white">
-
-                                <TextView
-                                    android:id="@+id/title_cvv"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/margin_2dp"
-                                    android:background="@color/white"
-                                    android:gravity="center"
-                                    android:text="@string/yourCard_Fragment_title_cvv_cvc"
-                                    android:textColor="@color/coal"
-                                    app:layout_constraintBottom_toTopOf="@+id/til_card_cvv"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent" />
 
                                 <com.google.android.material.textfield.TextInputLayout
                                     android:id="@+id/til_card_cvv"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/margin_16dp"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintHorizontal_bias="0.0"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/title_cvv">
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginStart="@dimen/margin_16dp">
 
                                     <com.google.android.material.textfield.TextInputEditText
                                         android:id="@+id/edit_card_cvv"
                                         style="@style/textInputEditText"
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
+                                        android:layout_height="wrap_content"
                                         android:background="@color/white"
                                         android:digits="0123456789"
                                         android:fontFamily="@font/inter"
-                                        android:inputType="number"
-                                        android:letterSpacing="0.15"
+                                        android:inputType="numberPassword"
                                         android:maxLength="3"
-                                        android:textColor="@color/dark0"
-                                        android:textSize="@dimen/text_size_16sp"
+                                        android:textColor="@color/coal"
+                                        android:textSize="@dimen/text_size_24sp"
                                         tools:ignore="SpeakableTextPresentCheck" />
-
                                 </com.google.android.material.textfield.TextInputLayout>
-                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                <TextView
+                                    android:id="@+id/title_cvv"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/margin_4dp"
+                                    android:background="@color/white"
+                                    android:gravity="center"
+                                    android:text="@string/yourCard_Fragment_title_cvv_cvc"
+                                    android:layout_gravity="top"
+                                    android:textColor="@color/coal"/>
+
+                            </FrameLayout>
                         </androidx.cardview.widget.CardView>
 
                         <TextView
@@ -232,7 +225,7 @@
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edit_card_number"
                                 style="@style/textInputEditTextCard"
-                                android:layout_width="match_parent"
+                                android:layout_width="316dp"
                                 android:layout_height="wrap_content"
                                 android:digits="0123456789 "
                                 android:fontFamily="@font/inter"
@@ -255,7 +248,8 @@
                             app:layout_constraintBottom_toBottomOf="@+id/til_card_number"
                             app:layout_constraintEnd_toEndOf="@+id/til_card_number"
                             app:layout_constraintTop_toTopOf="@+id/til_card_number"
-                            tools:ignore="TouchTargetSizeCheck" />
+                            tools:ignore="TouchTargetSizeCheck"
+                            app:tint="@color/coal" />
 
                         <ImageView
                             android:id="@+id/img_logo_bank"
@@ -276,8 +270,7 @@
                 android:layout_width="@dimen/view_height_40dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/margin_63dp"
-                android:background="@color/white"
-                android:elevation="1dp"
+                android:background="@color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -287,8 +280,7 @@
                 android:layout_width="@dimen/view_height_40dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/margin_63dp"
-                android:background="@color/white"
-                android:elevation="1dp"
+                android:background="@color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
                 app:layout_constraintTop_toTopOf="parent"

@@ -33,4 +33,8 @@
     <string name="yourCard_Fragment_sber_bank_label">СберБанк</string>
     <string name="yourCard_Fragment_tinkoff_bank_label">Тинькофф Банк</string>
     <string name="yourCard_Fragment_raiff_bank_label">Райффайзен Банк</string>
+
+    //Payments errors
+    <string name="invoice_payment_default_error">Ошибка проведения платежа</string>
+    <string name="invoice_payment_no_internet_error">Проверьте соединение с интернетом</string>
 </resources>

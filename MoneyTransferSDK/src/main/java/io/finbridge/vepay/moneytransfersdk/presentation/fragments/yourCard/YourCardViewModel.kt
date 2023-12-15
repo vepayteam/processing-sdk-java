@@ -1,18 +1,25 @@
 package io.finbridge.vepay.moneytransfersdk.presentation.fragments.yourCard
 
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.finbridge.vepay.moneytransfersdk.R
+import io.finbridge.vepay.moneytransfersdk.core.utils.emptyString
+import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.ResourceProvider
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.Card
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardUi
+import io.finbridge.vepay.moneytransfersdk.data.usecase.InvoicePaymentUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class YourCardViewModel @Inject constructor() : ViewModel() {
+class YourCardViewModel @Inject constructor(
+    private val invoicePaymentUseCase: InvoicePaymentUseCase,
+    private val resourceProvider: ResourceProvider,
+) : ViewModel() {
     private val _cardModel: MutableStateFlow<List<CardUi>> = MutableStateFlow(
         listOf(
             CardUi(
@@ -25,6 +32,9 @@ class YourCardViewModel @Inject constructor() : ViewModel() {
     )
 
     val cardModel = _cardModel.asStateFlow()
+
+    private val _threeDsUrl: MutableStateFlow<String> = MutableStateFlow(emptyString())
+    val threeDsUrl = _threeDsUrl.asStateFlow()
 
     fun activationCard(item: CardUi) {
         viewModelScope.launch {
@@ -187,6 +197,32 @@ class YourCardViewModel @Inject constructor() : ViewModel() {
             if (updatedItem != null) {
                 action.invoke(updatedItem)
             }
+        }
+    }
+
+    fun pay(
+        id: String,
+        screenHeight: Int,
+        screenWidth: Int,
+    ) {
+        viewModelScope.launch {
+            invoicePaymentUseCase.pay(
+                id = id,
+                card = cardModel.value.first().card,
+                screenHeight = screenHeight,
+                screenWidth = screenWidth
+            ).fold(
+                ifLeft = {
+                    Toast.makeText(
+                        resourceProvider.getContext(),
+                        it.getErrorMessageResource(),
+                        Toast.LENGTH_LONG
+                    ).show()
+                },
+                ifRight = {
+                    it.acsRedirect?.url?.let { url -> _threeDsUrl.emit(url) }
+                }
+            )
         }
     }
 

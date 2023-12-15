@@ -88,7 +88,7 @@ class NetworkModule {
         refundsPaymentRepository
 
     companion object {
-        private const val BASE_URL = "test.vepay.online/h2hapi/v1/"
+        private const val BASE_URL = "test.vepay.online/h2hapi/v1"
         private const val TAG_KTOR_LOGGER = "ktor_logger:"
     }
 }

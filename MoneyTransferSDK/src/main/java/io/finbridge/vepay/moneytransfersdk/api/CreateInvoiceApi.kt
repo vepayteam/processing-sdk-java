@@ -16,7 +16,7 @@ class CreateInvoiceApi @Inject constructor(
 
     override suspend fun execute(invoiceRequest: InvoiceRequest): Response<InvoiceResponse> {
         return getApiContentSafeOperation<InvoiceResponse> {
-            httpClient.post("/invoices") {
+            httpClient.post("invoices") {
                 setBody(invoiceRequest)
             }.body()
         }

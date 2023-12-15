@@ -22,7 +22,6 @@ import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardType
 import io.finbridge.vepay.moneytransfersdk.databinding.FragmentCardPayBinding
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.CardScannerActivityContract
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.ScannerType
-import io.finbridge.vepay.moneytransfersdk.presentation.fragments.sse.SseFragment
 import ru.tinkoff.decoro.MaskDescriptor
 import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser
 import ru.tinkoff.decoro.watchers.DescriptorFormatWatcher
@@ -72,15 +71,6 @@ class CardPayFragment : Fragment() {
     }
 
     private fun initClickListeners() {
-        binding.buttonPay.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SseFragment.newInstance())
-                .commit()
-            if (isValid()) {
-                //TODO платёж
-            }
-        }
-
         binding.btnScan.setOnClickListener {
             if (isNfcEnable()) openScanTypeDialog()
             else getCardDataFromScanner.launch(ScannerType.CAMERA)

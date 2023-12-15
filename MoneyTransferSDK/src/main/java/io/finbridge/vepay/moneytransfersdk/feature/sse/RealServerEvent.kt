@@ -132,7 +132,7 @@ internal class RealServerSentEvent(request: Request, listener: ServerSentEvent.L
         }
 
         private fun processLine(line: String?) {
-            if (line == null || line.isEmpty()) {
+            if (line.isNullOrEmpty()) {
                 dispatchEvent()
                 return
             }
@@ -169,16 +169,24 @@ internal class RealServerSentEvent(request: Request, listener: ServerSentEvent.L
         }
 
         private fun processField(field: String, value: String) {
-            if (Companion.DATA == field) {
-                data.append(value).append(WORD_WRAP)
-            } else if (Companion.ID == field) {
-                lastEventId = value
-            } else if (Companion.EVENT == field) {
-                eventName = value
-            } else if (Companion.RETRY == field && DIGITS_ONLY.matcher(value).matches()) {
-                val timeout = value.toLong()
-                if (listener.onRetryTime(this@RealServerSentEvent, timeout)) {
-                    reconnectTime = timeout
+            when {
+                Companion.DATA == field -> {
+                    data.append(value).append(WORD_WRAP)
+                }
+
+                Companion.ID == field -> {
+                    lastEventId = value
+                }
+
+                Companion.EVENT == field -> {
+                    eventName = value
+                }
+
+                Companion.RETRY == field && DIGITS_ONLY.matcher(value).matches() -> {
+                    val timeout = value.toLong()
+                    if (listener.onRetryTime(this@RealServerSentEvent, timeout)) {
+                        reconnectTime = timeout
+                    }
                 }
             }
         }
