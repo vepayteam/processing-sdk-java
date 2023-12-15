@@ -35,7 +35,7 @@ class InvoicePaymentUseCase @Inject constructor(
         screenHeight: Int,
         screenWidth: Int,
     ): Either<ErrorInvoicePayment, PaymentResponse> {
-        return testAnswer() //TODO удалить метод и его вызов
+       // return testAnswer()  //TODO удалить метод и его вызов
         if (checkForInternet(resourceProvider.getContext())) {
             paymentRepository.createPayment(
                 id = id,
