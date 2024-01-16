@@ -23,9 +23,9 @@ class MoneyTransferActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    YourCardFragment.newInstance(intent.getStringExtra(UUID_KEY) ?: emptyString())
-                ).commit()
+                R.id.fragment_container,
+                YourCardFragment.newInstance(intent.getStringExtra(UUID_KEY) ?: emptyString())
+            ).commit()
         }
 
         lifecycleScope.launch {

@@ -10,7 +10,6 @@ import android.text.Spannable
 import android.text.Spanned
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.LinkMovementMethod
-import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -143,6 +142,10 @@ class YourCardFragment : Fragment() {
             }
 
             btTransferPay.setOnClickListener {
+                with(binding) {
+                    parentLayout.isVisible = false
+                    progressBar.isVisible = true
+                }
                 viewModel.pay(
                     id = invoiceUuid,
                     screenHeight = getScreenHeight(),
@@ -170,14 +173,30 @@ class YourCardFragment : Fragment() {
             }
         }
         lifecycleScope.launch {
-            viewModel.threeDsUrl.collect {
-                if (it.isNotEmpty()) {
+            viewModel.acsRedirect.collect {
+                if (it != null) {
                     parentFragmentManager.beginTransaction()
                         .add(
                             R.id.fragment_container,
-                            ThreeDSFragment.newInstance(it, invoiceUuid)
+                            ThreeDSFragment.newInstance(
+                                acsUrl = it.url ?: emptyString(),
+                                md = it.postParameters?.md ?: emptyString(),
+                                paReq = it.postParameters?.paReq ?: emptyString(),
+                                term = it.postParameters?.termUrl ?: emptyString(),
+                                invoiceUuid = invoiceUuid
+                            )
                         )
                         .commit()
+                }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.payError.collect {
+                if (it != -1) {
+                    with(binding) {
+                        parentLayout.isVisible = true
+                        progressBar.isVisible = false
+                    }
                 }
             }
         }
@@ -434,9 +453,7 @@ class YourCardFragment : Fragment() {
                 windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
             windowMetrics.bounds.width() - insets.left - insets.right
         } else {
-            val displayMetrics = DisplayMetrics()
-            requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-            displayMetrics.widthPixels
+            requireActivity().resources.displayMetrics.widthPixels
         }
     }
 
@@ -447,9 +464,7 @@ class YourCardFragment : Fragment() {
                 windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
             windowMetrics.bounds.height() - insets.left - insets.right
         } else {
-            val displayMetrics = DisplayMetrics()
-            requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-            displayMetrics.heightPixels
+            requireActivity().resources.displayMetrics.heightPixels
         }
     }
 

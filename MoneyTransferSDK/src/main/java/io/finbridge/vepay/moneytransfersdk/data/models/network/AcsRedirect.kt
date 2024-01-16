@@ -9,4 +9,6 @@ data class AcsRedirect(
     @SerialName("url") val url: String?,
     @SerialName("method") val method: String?,
     @SerialName("postParameters") val postParameters: PostParameters?,
-)
+) {
+    constructor() : this(status = null, url = null, method = null, postParameters = null)
+}

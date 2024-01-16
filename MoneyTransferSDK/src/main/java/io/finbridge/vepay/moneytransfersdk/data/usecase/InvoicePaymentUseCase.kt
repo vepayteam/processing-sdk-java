@@ -3,6 +3,7 @@ package io.finbridge.vepay.moneytransfersdk.data.usecase
 import arrow.core.Either
 import io.finbridge.vepay.moneytransfersdk.core.utils.ErrorInvoicePayment
 import io.finbridge.vepay.moneytransfersdk.core.utils.NoInternetError
+import io.finbridge.vepay.moneytransfersdk.core.utils.PaymentError
 import io.finbridge.vepay.moneytransfersdk.core.utils.emptyString
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.ResourceProvider
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.checkForInternet
@@ -16,12 +17,14 @@ import io.finbridge.vepay.moneytransfersdk.data.models.network.PaymentResponse
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.Card
 import io.finbridge.vepay.moneytransfersdk.data.repository.PaymentRepository
 import io.finbridge.vepay.moneytransfersdk.data.repository.Response
+import java.net.InetAddress
+import java.net.NetworkInterface
 import java.util.Calendar
+import java.util.Collections
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.delay
 
 
 @Singleton
@@ -35,7 +38,7 @@ class InvoicePaymentUseCase @Inject constructor(
         screenHeight: Int,
         screenWidth: Int,
     ): Either<ErrorInvoicePayment, PaymentResponse> {
-       // return testAnswer()  //TODO удалить метод и его вызов
+        // return testAnswer()  //TODO удалить метод и его вызов
         if (checkForInternet(resourceProvider.getContext())) {
             paymentRepository.createPayment(
                 id = id,
@@ -48,7 +51,7 @@ class InvoicePaymentUseCase @Inject constructor(
                 if (paymentResponse is Response.Success) {
                     return Either.Right(paymentResponse.result)
                 } else {
-                    return Either.Left(NoInternetError) //TODO обработка разных ошибок сервера
+                    return Either.Left(PaymentError)
                 }
             }
         } else {
@@ -62,11 +65,11 @@ class InvoicePaymentUseCase @Inject constructor(
         screenWidth: Int,
     ): PaymentRequest {
         return PaymentRequest(
-            ip = "",
+            ip = getIPAddress(true) ?: "",
             card = CardRequest(
-                cardNumber = card.cardNumber ?: emptyString(),
+                cardNumber = card.cardNumber?.replace(" ", emptyString()) ?: emptyString(),
                 cardHolder = "CARD HOLDER",
-                expires = card.expireDate?.replace("/", "") ?: emptyString(),
+                expires = card.expireDate?.replace("/", emptyString()) ?: emptyString(),
                 cvc = card.cvv ?: emptyString()
             ),
             headerMap = HeaderMap(
@@ -112,5 +115,36 @@ class InvoicePaymentUseCase @Inject constructor(
                 )
             )
         )
+    }
+
+    fun getIPAddress(useIPv4: Boolean): String? {
+        try {
+            val interfaces: List<NetworkInterface> =
+                Collections.list(NetworkInterface.getNetworkInterfaces())
+            for (intf in interfaces) {
+                val addrs: List<InetAddress> = Collections.list(intf.inetAddresses)
+                for (addr in addrs) {
+                    if (!addr.isLoopbackAddress) {
+                        val sAddr = addr.hostAddress
+                        val isIPv4 = (sAddr?.indexOf(':') ?: 0) < 0
+                        if (useIPv4) {
+                            if (isIPv4) return sAddr
+                        } else {
+                            if (!isIPv4) {
+                                val delim = sAddr?.indexOf('%') ?: 0
+                                return if (delim < 0) sAddr?.uppercase(Locale.getDefault()) else sAddr?.substring(
+                                    0,
+                                    delim
+                                )?.uppercase(
+                                    Locale.getDefault()
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (ignored: Exception) {
+        }
+        return ""
     }
 }
