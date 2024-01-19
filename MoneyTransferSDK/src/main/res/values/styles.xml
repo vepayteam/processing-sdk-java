@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="moneyTransferTheme" parent="Theme.MaterialComponents.DayNight">
+    <style name="moneyTransferTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/dark_sky_blue</item>
         <item name="colorPrimaryDark">@color/dark</item>
         <item name="colorAccent">@color/dark_sky_blue</item>

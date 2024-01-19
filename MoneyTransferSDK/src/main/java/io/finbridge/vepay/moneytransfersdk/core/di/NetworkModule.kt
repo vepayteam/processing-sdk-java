@@ -14,6 +14,8 @@ import io.finbridge.vepay.moneytransfersdk.data.repository.RefundsPaymentReposit
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.cookies.AcceptAllCookiesStorage
+import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -33,6 +35,8 @@ class NetworkModule {
     @Provides
     fun getHttpClient(): HttpClient {
         return HttpClient(OkHttp) {
+            followRedirects = true
+
             install(Logging) {
                 logger = object : Logger {
                     override fun log(message: String) {
@@ -51,6 +55,10 @@ class NetworkModule {
                 })
             }
 
+            install(HttpCookies) {
+                storage = AcceptAllCookiesStorage()
+            }
+
             engine {
                 config {
                     connectTimeout(1, TimeUnit.MINUTES)
@@ -67,8 +75,10 @@ class NetworkModule {
                 }
                 header("Accept", "application/json")
                 header("Content-Type", "application/json")
+                header("Accept", "text/html")
+                header("Content-Type", "text/html")
                 header("Connection", "keep-alive")
-                header("Accept-Encoding", "gzip, deflate, br")
+                header("Accept-Encoding", "gzip, deflate")
             }
         }
     }

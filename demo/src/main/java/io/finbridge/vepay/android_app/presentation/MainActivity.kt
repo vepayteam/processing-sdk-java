@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import io.finbridge.vepay.android_app.R
 import io.finbridge.vepay.moneytransfersdk.core.utils.MoneyTransferActivityContract
 import io.finbridge.vepay.moneytransfersdk.data.models.TransferStatus
-import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
     private val initMoneyTransfer =
@@ -18,6 +17,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initMoneyTransfer.launch(UUID.randomUUID().toString())
+        initMoneyTransfer.launch("7e1c78df-5017-4a3f-891d-af9ce1a774ff")
     }
 }

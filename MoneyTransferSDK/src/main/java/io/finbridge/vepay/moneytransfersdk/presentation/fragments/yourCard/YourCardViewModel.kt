@@ -5,13 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.finbridge.vepay.moneytransfersdk.R
-import io.finbridge.vepay.moneytransfersdk.core.utils.emptyString
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.ResourceProvider
+import io.finbridge.vepay.moneytransfersdk.data.models.network.AcsRedirect
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.Card
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardUi
 import io.finbridge.vepay.moneytransfersdk.data.usecase.InvoicePaymentUseCase
 import javax.inject.Inject
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -33,8 +36,12 @@ class YourCardViewModel @Inject constructor(
 
     val cardModel = _cardModel.asStateFlow()
 
-    private val _threeDsUrl: MutableStateFlow<String> = MutableStateFlow(emptyString())
-    val threeDsUrl = _threeDsUrl.asStateFlow()
+    private val _acsRedirect: MutableStateFlow<AcsRedirect?> = MutableStateFlow(null)
+    val acsRedirect = _acsRedirect.asStateFlow()
+
+    private val _payError: MutableSharedFlow<Int> =
+        MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val payError = _payError.asSharedFlow()
 
     fun activationCard(item: CardUi) {
         viewModelScope.launch {
@@ -213,6 +220,7 @@ class YourCardViewModel @Inject constructor(
                 screenWidth = screenWidth
             ).fold(
                 ifLeft = {
+                    _payError.emit(it.getErrorMessageResource())
                     Toast.makeText(
                         resourceProvider.getContext(),
                         it.getErrorMessageResource(),
@@ -220,7 +228,9 @@ class YourCardViewModel @Inject constructor(
                     ).show()
                 },
                 ifRight = {
-                    it.acsRedirect?.url?.let { url -> _threeDsUrl.emit(url) }
+                    it.acsRedirect.let { acsRedirect ->
+                        _acsRedirect.emit(acsRedirect ?: AcsRedirect())
+                    }
                 }
             )
         }

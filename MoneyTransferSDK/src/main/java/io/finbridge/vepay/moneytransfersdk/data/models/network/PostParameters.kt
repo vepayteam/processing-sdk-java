@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostParameters(
-    @SerialName("pa_req") val paReq: String? = null,
-    @SerialName("md") val md: String? = null,
-    @SerialName("term_url") val termUrl: String? = null,
+    @SerialName("PaReq") val paReq: String? = null,
+    @SerialName("MD") val md: String? = null,
+    @SerialName("TermUrl") val termUrl: String? = null,
 )
