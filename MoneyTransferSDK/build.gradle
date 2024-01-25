@@ -6,11 +6,23 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlinx-serialization'
+    id 'maven-publish'
 }
+
+group = 'com.github.moneytransfersdk'
+version = '0.0.1'
 
 android {
     namespace 'io.finbridge.vepay.moneytransfersdk'
     compileSdk 34
+
+    publishing {
+        multipleVariants {
+            allVariants()
+            withJavadocJar()
+            withSourcesJar()
+        }
+    }
 
     defaultConfig {
         minSdk 24
@@ -27,11 +39,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
     buildFeatures {
         viewBinding true
@@ -89,4 +101,18 @@ dependencies {
     implementation 'io.arrow-kt:arrow-core:1.2.0'
     implementation 'io.arrow-kt:arrow-fx-stm:1.2.0'
     implementation 'io.arrow-kt:arrow-fx-coroutines:1.2.0'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from(components["release"])
+
+                groupId = "com.github.moneytransfersdk"
+                artifactId = "moneytransfersdk"
+                version = "0.0.1"
+            }
+        }
+    }
 }
