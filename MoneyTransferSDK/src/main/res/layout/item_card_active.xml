@@ -20,8 +20,8 @@
             android:layout_width="@dimen/item_card_size_180dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:background="@drawable/corner_radius_30">
-
 
         <ImageView
                 android:id="@+id/imgLogo"
@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_8dp"
-        android:src="@drawable/rectangle"
+        android:src="@drawable/ic_rectangle"
         app:layout_constraintEnd_toEndOf="@+id/cardView"
         app:layout_constraintStart_toStartOf="@+id/cardView"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />

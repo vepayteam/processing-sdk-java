@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
     android:background="@color/white"
+    android:fillViewport="true"
     tools:context=".presentation.fragments.yourCard.YourCardFragment">
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/parentLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp">
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -22,80 +23,180 @@
             android:indeterminate="true"
             android:indeterminateTint="@color/limequat"
             android:indeterminateTintMode="src_atop"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/parentLayout"
+        <TextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_margin="@dimen/margin_24dp"
+            android:text="@string/yourCard_Fragment_your_card_title"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_40sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/title"
+        <FrameLayout
+            android:id="@+id/frameLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-16dp"
+            app:layout_constraintBottom_toTopOf="@id/imagesFlow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rcCard">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/bankInfoLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_24dp"
-                android:layout_marginTop="@dimen/margin_16dp"
-                android:layout_marginBottom="@dimen/margin_16dp"
-                android:text="@string/yourCard_Fragment_your_card_title"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_34sp"
-                android:textStyle="bold" />
+                android:layout_marginHorizontal="@dimen/margin_24dp"
+                app:cardBackgroundColor="@color/limequat"
+                app:cardCornerRadius="@dimen/card_corner_radius_30dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcCard"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_12dp"
-                    android:orientation="horizontal"
-                    android:visibility="visible"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_collapseMode="pin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:itemCount="6"
-                    tools:listitem="@layout/item_card" />
+                    android:orientation="vertical">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_83dp"
-                    android:background="@color/white"
-                    android:elevation="2dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/bankInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/ice"
+                        app:cardCornerRadius="@dimen/card_corner_radius_30dp"
+                        app:layout_constraintBottom_toTopOf="@+id/cvvInfo"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/frameLayout1"
+                        app:strokeColor="@color/coal24"
+                        app:strokeWidth="2dp">
 
-                    <androidx.cardview.widget.CardView
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_24dp"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/bankNameLogo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:id="@+id/imgBankLogo"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:srcCompat="@drawable/ic_sber" />
+
+                                <TextView
+                                    android:id="@+id/bankName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/inter"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/text_size_28sp"
+                                    tools:text="Сбербанк" />
+                            </LinearLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/til_card_number"
+                                style="@style/textInputLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edit_card_number"
+                                    style="@style/textInputEditTextCard"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:digits="0123456789 "
+                                    android:fontFamily="@font/inter"
+                                    android:hint="@string/yourCard_Fragment_input_card"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="number"
+                                    android:nextFocusDown="@id/til_card_data"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/coal48"
+                                    android:textStyle="bold"
+                                    tools:text="4242 4242 4242 4242" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@drawable/underline_gradient" />
+
+                            <TextView
+                                android:id="@+id/labelDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_16dp"
+                                android:layout_marginBottom="@dimen/margin_2dp"
+                                android:fontFamily="@font/inter"
+                                android:text="@string/yourCard_Fragment_label_date"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/text_size_12sp" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/til_card_data"
+                                style="@style/textInputLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edit_card_date"
+                                    style="@style/textInputEditTextCard"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:digits="0123456789/"
+                                    android:hint="@string/yourCard_Fragment_your_card_fragment_card_date"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="number"
+                                    android:letterSpacing="0.1"
+                                    android:nextFocusDown="@id/edit_card_holder"
+                                    android:textColor="@color/coal"
+                                    android:textColorHint="@color/coal48"
+                                    android:textStyle="bold" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cvvInfo"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/card_svv_Info_height_size_300dp"
-                        android:layout_marginStart="@dimen/margin_16dp"
-                        android:layout_marginEnd="@dimen/margin_16dp"
-                        android:layout_marginBottom="@dimen/margin_8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         app:cardBackgroundColor="@color/green_light"
                         app:cardCornerRadius="@dimen/card_corner_radius_30dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent">
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/frameLayout1">
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_16dp"
+                            android:layout_marginBottom="@dimen/margin_20dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/cvvCardView"
                                 android:layout_width="@dimen/cvv_card_width_104dp"
                                 android:layout_height="@dimen/cvv_card_height_64dp"
                                 android:layout_marginStart="@dimen/margin_24dp"
-                                android:layout_marginBottom="@dimen/margin_16dp"
+                                android:layout_marginBottom="@dimen/margin_4dp"
                                 app:cardCornerRadius="@dimen/card_corner_radius_20dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent">
@@ -122,7 +223,7 @@
                                             android:fontFamily="@font/inter"
                                             android:inputType="numberPassword"
                                             android:maxLength="3"
-                                            android:textColor="@color/coal"
+                                            android:textColor="@color/coal48"
                                             android:textSize="@dimen/text_size_24sp"
                                             tools:ignore="SpeakableTextPresentCheck" />
                                     </com.google.android.material.textfield.TextInputLayout>
@@ -143,308 +244,108 @@
 
                             <TextView
                                 android:id="@+id/label_card_cvv"
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/margin_8dp"
+                                android:layout_marginStart="@dimen/margin_16dp"
+                                android:layout_marginBottom="@dimen/margin_4dp"
                                 android:fontFamily="@font/inter"
                                 android:gravity="center|start"
                                 android:text="@string/yourCard_Fragment_label_cart_cvv"
-                                android:textColor="@color/dark_light"
-                                app:layout_constraintBottom_toBottomOf="@+id/cvvCardView"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/cvvCardView"
-                                app:layout_constraintTop_toTopOf="@+id/cvvCardView" />
+                                android:textColor="@color/dark_light" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </androidx.cardview.widget.CardView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_24dp"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_collapseMode="pin"
+            app:layout_constraintBottom_toTopOf="@id/frameLayout1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintVertical_bias="0"
+            tools:itemCount="6"
+            tools:listitem="@layout/item_card" />
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/bankInfo"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/bank_info_height_250dp"
-                        android:layout_marginStart="@dimen/margin_16dp"
-                        android:layout_marginEnd="@dimen/margin_16dp"
-                        android:layout_marginBottom="@dimen/margin_100dp"
-                        app:cardBackgroundColor="@color/green_dark"
-                        app:cardCornerRadius="@dimen/card_corner_radius_30dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/cvvInfo"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0">
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/imagesFlow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_24dp"
+            app:constraint_referenced_ids="masterSecPay,visaSecPay,mirSecPay,imgSecPay"
+            app:flow_horizontalGap="@dimen/margin_16dp"
+            app:flow_horizontalStyle="packed"
+            app:flow_wrapMode="chain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/frameLayout1" />
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/masterSecPay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_mastercard_sc" />
 
-                            <ImageView
-                                android:id="@+id/icPs"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/margin_32dp"
-                                app:layout_constraintBottom_toBottomOf="@+id/til_card_data"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/til_card_data"
-                                app:srcCompat="@drawable/ic_ps_visa_24dp" />
+        <ImageView
+            android:id="@+id/visaSecPay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_visa_sc" />
 
-                            <TextView
-                                android:id="@+id/labelDate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/margin_2dp"
-                                android:fontFamily="@font/inter"
-                                android:text="@string/yourCard_Fragment_label_date"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/text_size_12sp"
-                                app:layout_constraintBottom_toTopOf="@+id/til_card_data"
-                                app:layout_constraintEnd_toEndOf="@+id/til_card_number"
-                                app:layout_constraintHorizontal_bias="0.02"
-                                app:layout_constraintStart_toStartOf="@+id/til_card_number"
-                                app:layout_constraintTop_toBottomOf="@+id/til_card_number" />
+        <ImageView
+            android:id="@+id/mirSecPay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_mir_sc" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/til_card_data"
-                                style="@style/textInputLayout"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="@+id/labelDate"
-                                app:layout_constraintTop_toBottomOf="@+id/til_card_number">
+        <ImageView
+            android:id="@+id/imgSecPay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_pci_dss" />
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/edit_card_date"
-                                    style="@style/textInputEditText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@null"
-                                    android:digits="0123456789/"
-                                    android:hint="@string/yourCard_Fragment_your_card_fragment_card_date"
-                                    android:imeOptions="actionNext"
-                                    android:inputType="number"
-                                    android:letterSpacing="0.15"
-                                    android:nextFocusDown="@id/edit_card_holder"
-                                    android:textColor="@color/white"
-                                    android:textColorHint="@color/gray0"
-                                    tools:text="@string/yourCard_Fragment_your_card_fragment_card_date" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/til_card_number"
-                                style="@style/textInputLayout"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/margin_24dp"
-                                android:layout_marginEnd="@dimen/margin_24dp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/edit_card_number"
-                                    style="@style/textInputEditTextCard"
-                                    android:layout_width="316dp"
-                                    android:layout_height="wrap_content"
-                                    android:digits="0123456789 "
-                                    android:fontFamily="@font/inter"
-                                    android:hint="@string/yourCard_Fragment_input_card"
-                                    android:imeOptions="actionNext"
-                                    android:inputType="number"
-                                    android:nextFocusDown="@id/til_card_data"
-                                    android:textColor="@color/white"
-                                    android:textColorHint="@color/gray0"
-                                    tools:text="4242 4242 4242 4242" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <ImageButton
-                                android:id="@+id/icon_card_number"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@color/transparent"
-                                android:contentDescription="@string/yourCard_Fragment_visible_card_info"
-                                android:src="@drawable/ic_card_visibility"
-                                app:layout_constraintBottom_toBottomOf="@+id/til_card_number"
-                                app:layout_constraintEnd_toEndOf="@+id/til_card_number"
-                                app:layout_constraintTop_toTopOf="@+id/til_card_number"
-                                app:tint="@color/coal"
-                                tools:ignore="TouchTargetSizeCheck" />
-
-                            <ImageView
-                                android:id="@+id/img_logo_bank"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/margin_24dp"
-                                app:layout_constraintBottom_toTopOf="@+id/til_card_number"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintVertical_bias="0.59000003"
-                                app:srcCompat="@drawable/ic_sber_logo" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </androidx.cardview.widget.CardView>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <View
-                    android:id="@+id/leftBorder"
-                    android:layout_width="@dimen/view_height_40dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/margin_63dp"
-                    android:background="@color/transparent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:id="@+id/rightBorder"
-                    android:layout_width="@dimen/view_height_40dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/margin_63dp"
-                    android:background="@color/transparent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/tvPayLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_16dp"
-                android:fontFamily="@font/inter"
-                android:text="@string/yourCard_Fragment_sec_pay_label"
-                android:textColor="@color/dark_light" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/bottomCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_24dp"
+            android:background="@drawable/corner_radius_top_right_40_background"
+            app:cardBackgroundColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imagesFlow"
+            app:layout_constraintVertical_bias="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/margin_8dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imgPay1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_8dp"
-                    android:src="@drawable/ic_mastercard_37dp_24dp" />
-
-                <ImageView
-                    android:id="@+id/imgPay2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_8dp"
-                    android:src="@drawable/ic_mir_40dp_24dp" />
-
-                <ImageView
-                    android:id="@+id/imgPay3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_8dp"
-                    android:src="@drawable/ic_visa_40dp_24dp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvlabelSecPay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16dp"
-                android:layout_marginTop="@dimen/margin_16dp"
-                android:fontFamily="@font/inter"
-                android:text="@string/yourCard_Fragment_sec_pay0"
-                android:textColor="@color/dark_light"
-                app:layout_constraintBottom_toTopOf="@+id/imageView2"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageView
-                android:id="@+id/imgSecPay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_16dp"
-                android:src="@drawable/ic_pci_dss" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:background="@drawable/corner_radius_top_right_40_background"
-                app:cardBackgroundColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                android:orientation="vertical">
 
-                <LinearLayout
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btTransferPay"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/corner_radius_top_right_40_background"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="@dimen/margin_24dp"
-                        android:layout_marginVertical="@dimen/margin_16dp"
-                        android:orientation="horizontal">
-
-                        <CheckBox
-                            android:id="@+id/checkBox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:button="@drawable/checkbox_selector"
-                            android:drawableTintMode="src_in"
-                            android:theme="@style/checkBox"
-                            tools:ignore="TouchTargetSizeCheck" />
-
-                        <TextView
-                            android:id="@+id/checkBoxLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:fontFamily="@font/inter"
-                            android:text="@string/yourCard_Fragment_check_offers_label"
-                            android:textColor="@color/dark_light"
-                            app:layout_constraintBottom_toBottomOf="@+id/checkBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox" />
-
-                        <TextView
-                            android:id="@+id/tvLink"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/margin_2dp"
-                            android:autoLink="web"
-                            android:fontFamily="@font/inter"
-                            android:linksClickable="true"
-                            android:text="@string/yourCard_Fragment_check_offers_label_link"
-                            android:textColorLink="@color/strawberry"
-                            android:textIsSelectable="true"
-                            app:layout_constraintBottom_toBottomOf="@+id/checkBoxLabel"
-                            app:layout_constraintStart_toEndOf="@+id/checkBoxLabel"
-                            app:layout_constraintTop_toTopOf="@+id/checkBoxLabel" />
-                    </LinearLayout>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btTransferPay"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginHorizontal="@dimen/margin_24dp"
-                        android:backgroundTint="@color/coal"
-                        android:paddingVertical="@dimen/padding_16dp"
-                        android:text="@string/yourCard_Fragment_buttom_pay_label"
-                        android:textAllCaps="false"
-                        android:textColor="@drawable/button_text_color_selector"
-                        android:textSize="@dimen/text_size_24sp"
-                        app:cornerRadius="@dimen/margin_24dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_24dp"
-                        android:text="@string/yourCard_Fragment_label_pay"
-                        android:textColor="@color/dark_light" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
-    </FrameLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/margin_24dp"
+                    android:backgroundTint="@color/coal"
+                    android:paddingVertical="@dimen/padding_16dp"
+                    android:text="@string/yourCard_Fragment_buttom_pay_label"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/button_text_color_selector"
+                    android:textSize="@dimen/text_size_24sp"
+                    app:cornerRadius="@dimen/margin_24dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

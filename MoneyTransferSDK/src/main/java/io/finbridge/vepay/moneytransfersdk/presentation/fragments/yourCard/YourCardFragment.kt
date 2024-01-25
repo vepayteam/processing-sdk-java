@@ -6,10 +6,7 @@ import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
-import android.text.Spannable
-import android.text.Spanned
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +14,6 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -28,10 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import io.finbridge.vepay.moneytransfersdk.R
-import io.finbridge.vepay.moneytransfersdk.core.utils.NoUnderlineSpan
 import io.finbridge.vepay.moneytransfersdk.core.utils.emptyString
-import io.finbridge.vepay.moneytransfersdk.core.utils.transformationMethods.TransformationMethodCardNumber
-import io.finbridge.vepay.moneytransfersdk.core.utils.transformationMethods.TransformationMethodDate
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.Card
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardBank
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardType
@@ -63,26 +56,16 @@ class YourCardFragment : Fragment() {
 
         DescriptorFormatWatcher(UnderscoreDigitSlotsParser(), descriptor)
     }
-    private val passwordTransformationDate = object : TransformationMethodDate() {}
-    private val passwordTransformationCardNumber = object : TransformationMethodCardNumber() {}
     private val cardAdapter = CardAdapter(
         controllerColor = { rectangle, colorRes ->
             rectangle.setColorFilter(
                 requireContext().getColor(colorRes),
                 PorterDuff.Mode.SRC_IN
             )
-            binding.bankInfo.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    colorRes
-                )
-            )
-
         },
         onClick = { item, position -> }
     )
     private var isEventAutoActivation: Boolean = true
-    private var visibilityInfoCard: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -99,48 +82,16 @@ class YourCardFragment : Fragment() {
             cardDateFormatWatcher.installOn(editCardDate)
             rcCard.adapter = cardAdapter
         }
-        transformSecurityCardInfo()
         initDoAfterTextChanged()
         initOnFocusChangeListeners()
         initCard()
         rsScrollListener()
         lifecycleListener()
         initClickListeners()
-        linkedText()
-    }
-
-    private fun linkedText() {
-        val mNoUnderlineSpan = NoUnderlineSpan()
-        if (binding.tvLink.text is Spannable) {
-            val s = binding.tvLink.text as Spannable
-            s.setSpan(mNoUnderlineSpan, 0, s.length, Spanned.SPAN_MARK_MARK)
-        }
-        binding.tvLink.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun initClickListeners() {
         with(binding) {
-            iconCardNumber.setOnClickListener {
-                if (visibilityInfoCard) {
-                    transformSecurityCardInfo()
-                    visibilityInfoCard = false
-                } else {
-                    editCardNumber.transformationMethod =
-                        HideReturnsTransformationMethod.getInstance()
-                    editCardDate.transformationMethod =
-                        HideReturnsTransformationMethod.getInstance()
-                    visibilityInfoCard = true
-                    iconCardNumber.setImageResource(R.drawable.ic_card_visibility)
-                }
-                editCardNumber.text?.let { it1 -> binding.editCardNumber.setSelection(it1.length) }
-                editCardDate.text?.let { it1 -> binding.editCardDate.setSelection(it1.length) }
-                editCardCvv.text?.let { it1 -> binding.editCardCvv.setSelection(it1.length) }
-            }
-
-            checkBox.setOnClickListener {
-                activationButton()
-            }
-
             btTransferPay.setOnClickListener {
                 with(binding) {
                     parentLayout.isVisible = false
@@ -152,14 +103,6 @@ class YourCardFragment : Fragment() {
                     screenWidth = getScreenWidth(),
                 )
             }
-        }
-    }
-
-    private fun transformSecurityCardInfo() {
-        with(binding) {
-            iconCardNumber.setImageResource(R.drawable.ic_card_no_visibility)
-            editCardNumber.transformationMethod = passwordTransformationCardNumber
-            editCardDate.transformationMethod = passwordTransformationDate
         }
     }
 
@@ -239,6 +182,7 @@ class YourCardFragment : Fragment() {
 
     private fun errorMode(isErrorMode: Boolean, action: () -> Unit = {}) {
         if (isErrorMode) {
+            // TODO выводить ошибку
             context?.let {
                 viewModel.editColor(R.color.light_blue_grey)
             }
@@ -254,18 +198,22 @@ class YourCardFragment : Fragment() {
         val bankName = requireContext().getString(bankInfo.getNameRes())
 
         viewModel.editBankName(bankName)
-        updateColor(bankInfo)
         with(binding) {
-            imgLogoBank.setImageResource(logo)
+            imgBankLogo.setImageResource(logo)
             if (cardNumber.isNotEmpty() && icon != null) {
+                Log.e("TAGG","cardNumber.isNotEmpty() && icon != null")
                 viewModel.editIcon(icon)
+                bankNameLogo.isVisible = false
             }
-
             if (cardNumber.isEmpty() || psIcon == null) {
-                icPs.isVisible = false
+                Log.e("TAGG","cardNumber.isEmpty() || psIcon == null")
+                // icPs.isVisible = false
             } else {
-                icPs.isVisible = true
-                icPs.setImageResource(psIcon)
+                Log.e("TAGG","else")
+
+                bankNameLogo.isVisible = true
+                // icPs.isVisible = true
+                //icPs.setImageResource(psIcon)
             }
         }
     }
@@ -364,7 +312,6 @@ class YourCardFragment : Fragment() {
                 Card.isValidNumber(editCardNumber.text.toString())
                         && Card.isValidDate(editCardDate.text.toString())
                         && Card.isValidCvv(editCardCvv.text.toString())
-                        && checkBox.isChecked
         }
     }
 
@@ -372,8 +319,7 @@ class YourCardFragment : Fragment() {
         context?.let {
             val bankInfo = CardBank.getType(card.card.cardNumber)
             val logo = bankInfo.getLogoRes()
-            binding.imgLogoBank.setImageResource(logo)
-            updateColor(bankInfo)
+            binding.imgBankLogo.setImageResource(logo)
         }
     }
 
@@ -388,48 +334,6 @@ class YourCardFragment : Fragment() {
             editCardDate.setText(card.card.expireDate)
             editCardNumber.setText(card.card.cardNumber)
         }
-        updateColor(CardBank.getType(card.card.cardNumber))
-    }
-
-    private fun updateColor(bankInfo: CardBank) {
-        when (bankInfo) {
-            CardBank.UNKNOWN -> {
-                viewModel.editColor(R.color.strawberry)
-                visibilityIconTint(R.color.coal)
-            }
-
-            CardBank.ALFA_BANK -> {
-                viewModel.editColor(R.color.alfa_card)
-                visibilityIconTint(R.color.coal)
-            }
-
-            CardBank.SBER_BANK -> {
-                viewModel.editColor(R.color.sbrebank_card)
-                visibilityIconTint(R.color.coal)
-            }
-
-            CardBank.TINKOFF_BANK -> {
-                viewModel.editColor(R.color.dark)
-                visibilityIconTint(R.color.ice)
-            }
-
-            CardBank.RAIFFEISEN_BANK -> {
-                viewModel.editColor(R.color.raifasenk_card)
-                visibilityIconTint(R.color.ice)
-            }
-
-            else -> {
-                viewModel.editColor(R.color.strawberry)
-                visibilityIconTint(R.color.coal)
-            }
-        }
-    }
-
-    private fun visibilityIconTint(color: Int) {
-        binding.iconCardNumber.setColorFilter(
-            ContextCompat.getColor(requireContext(), color),
-            PorterDuff.Mode.SRC_IN
-        )
     }
 
     private fun getPercentage(view: View): Double {
