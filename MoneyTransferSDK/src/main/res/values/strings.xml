@@ -33,6 +33,7 @@
     <string name="yourCard_Fragment_sber_bank_label">СберБанк</string>
     <string name="yourCard_Fragment_tinkoff_bank_label">Тинькофф Банк</string>
     <string name="yourCard_Fragment_raiff_bank_label">Райффайзен Банк</string>
+    <string name="yourCard_Fragment_card_number_error">Неверный номер карты</string>
 
     //Payments errors
     <string name="invoice_payment_default_error">Ошибка проведения платежа</string>

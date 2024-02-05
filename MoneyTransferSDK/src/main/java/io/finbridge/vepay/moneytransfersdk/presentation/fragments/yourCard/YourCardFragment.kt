@@ -6,7 +6,6 @@ import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +13,7 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -62,8 +62,15 @@ class YourCardFragment : Fragment() {
                 requireContext().getColor(colorRes),
                 PorterDuff.Mode.SRC_IN
             )
+            binding.bankInfo.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    colorRes
+                )
+            )
+
         },
-        onClick = { item, position -> }
+        onClick = { _, _ -> }
     )
     private var isEventAutoActivation: Boolean = true
 
@@ -180,13 +187,16 @@ class YourCardFragment : Fragment() {
         }
     }
 
-    private fun errorMode(isErrorMode: Boolean, action: () -> Unit = {}) {
-        if (isErrorMode) {
-            // TODO выводить ошибку
-            context?.let {
-                viewModel.editColor(R.color.light_blue_grey)
-            }
-        } else action.invoke()
+    private fun errorMode(
+        isErrorMode: Boolean,
+        isEditCardNumber: Boolean = false,
+        action: () -> Unit = {}
+    ) {
+        if (isErrorMode && isEditCardNumber) {
+            binding.cardError.isVisible = true
+        } else {
+            action.invoke()
+        }
     }
 
     private fun updatePaymentSystemInfo(cardNumber: String) {
@@ -198,22 +208,18 @@ class YourCardFragment : Fragment() {
         val bankName = requireContext().getString(bankInfo.getNameRes())
 
         viewModel.editBankName(bankName)
+        updateColor(bankInfo)
         with(binding) {
             imgBankLogo.setImageResource(logo)
             if (cardNumber.isNotEmpty() && icon != null) {
-                Log.e("TAGG","cardNumber.isNotEmpty() && icon != null")
                 viewModel.editIcon(icon)
-                bankNameLogo.isVisible = false
             }
             if (cardNumber.isEmpty() || psIcon == null) {
-                Log.e("TAGG","cardNumber.isEmpty() || psIcon == null")
-                // icPs.isVisible = false
+                icPs.isVisible = false
             } else {
-                Log.e("TAGG","else")
-
                 bankNameLogo.isVisible = true
-                // icPs.isVisible = true
-                //icPs.setImageResource(psIcon)
+                icPs.isVisible = true
+                icPs.setImageResource(psIcon)
             }
         }
     }
@@ -222,18 +228,23 @@ class YourCardFragment : Fragment() {
         with(binding) {
             editCardCvv.setOnFocusChangeListener { _, hasFocus ->
                 errorMode(
-                    !hasFocus && !Card.isValidCvv(editCardCvv.text.toString()),
+                    !hasFocus && !Card.isValidCvv(editCardCvv.text.toString())
                 )
             }
             editCardDate.setOnFocusChangeListener { _, hasFocus ->
                 errorMode(
-                    !hasFocus && !Card.isValidDate(editCardDate.text.toString()),
+                    !hasFocus && !Card.isValidDate(editCardDate.text.toString())
                 )
             }
             editCardNumber.setOnFocusChangeListener { _, hasFocus ->
                 errorMode(
-                    !hasFocus && !Card.isValidNumber(editCardNumber.text.toString())
+                    !hasFocus && !Card.isValidNumber(editCardNumber.text.toString()), true
                 )
+                if (hasFocus || Card.isValidNumber(editCardNumber.text.toString()) || editCardNumber.text.toString()
+                        .isEmpty()
+                ) {
+                    binding.cardError.isVisible = false
+                }
             }
             editCardCvv.setOnEditorActionListener { _, actionId, event ->
                 if (event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
@@ -253,6 +264,7 @@ class YourCardFragment : Fragment() {
                 val cardNumber = editableText.toString()
                 if (Card.isValidNumber(cardNumber) || editCardNumber.hasFocus() || editableText?.isEmpty() == true) {
                     errorMode(false)
+                    binding.cardError.isVisible = false
                     if (cardNumber.length == CARD_NUMBER_MAX_LENGTH)
                         viewModel.editCardNumber(cardNumber)
                 } else {
@@ -273,6 +285,7 @@ class YourCardFragment : Fragment() {
                                     binding.editCardCvv.text.toString()
                                 )
                             ) {
+                                binding.cardError.isVisible = false
                                 correctCardState(card)
                             }
                         }
@@ -292,6 +305,7 @@ class YourCardFragment : Fragment() {
                             if (Card.isValidNumber(editCardNumber.text.toString())
                                 && Card.isValidDate(editCardDate.text.toString())
                             ) {
+                                binding.cardError.isVisible = false
                                 correctCardState(card)
                             }
                         }
@@ -320,6 +334,7 @@ class YourCardFragment : Fragment() {
             val bankInfo = CardBank.getType(card.card.cardNumber)
             val logo = bankInfo.getLogoRes()
             binding.imgBankLogo.setImageResource(logo)
+            updateColor(bankInfo)
         }
     }
 
@@ -333,6 +348,35 @@ class YourCardFragment : Fragment() {
             editCardCvv.setText(card.card.cvv)
             editCardDate.setText(card.card.expireDate)
             editCardNumber.setText(card.card.cardNumber)
+        }
+        updateColor(CardBank.getType(card.card.cardNumber))
+    }
+
+    private fun updateColor(bankInfo: CardBank) {
+        when (bankInfo) {
+            CardBank.UNKNOWN -> {
+                viewModel.editColor(R.color.strawberry)
+            }
+
+            CardBank.ALFA_BANK -> {
+                viewModel.editColor(R.color.alfa_card)
+            }
+
+            CardBank.SBER_BANK -> {
+                viewModel.editColor(R.color.sbrebank_card)
+            }
+
+            CardBank.TINKOFF_BANK -> {
+                viewModel.editColor(R.color.tinkoff_card)
+            }
+
+            CardBank.RAIFFEISEN_BANK -> {
+                viewModel.editColor(R.color.raifasenk_card)
+            }
+
+            else -> {
+                viewModel.editColor(R.color.strawberry)
+            }
         }
     }
 

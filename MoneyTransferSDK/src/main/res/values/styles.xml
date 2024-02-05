@@ -28,7 +28,7 @@
 
     <style name="textInputLayout" parent="Widget.Design.TextInputLayout">
         <item name="boxBackgroundMode">none</item>
-        <item name="android:textColorHint">@color/coal48</item>
+        <item name="android:textColorHint">@color/ice24</item>
         <item name="hintEnabled">false</item>
         <item name="materialThemeOverlay">@style/themeOverlayFilledPadding</item>
         <item name="android:padding">@dimen/padding_8dp</item>
