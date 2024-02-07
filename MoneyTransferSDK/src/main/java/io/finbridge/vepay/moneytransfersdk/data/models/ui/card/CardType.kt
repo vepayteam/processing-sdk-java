@@ -28,10 +28,10 @@ enum class CardType {
     }
 
     fun getIconRes(): Int? = when (this) {
-        VISA -> R.drawable.ic_ps_visa_24dp
+        VISA -> R.drawable.ic_visa_color_40_24
         MASTERCARD -> R.drawable.ic_mastercard_40_24
-        MIR -> R.drawable.ic_ps_mir_24dp
-        JCB -> R.drawable.ic_ps_jcb_24dp
+        MIR -> R.drawable.ic_mir_40dp_24dp
+        JCB -> R.drawable.ic_color_jcb_26_24
         else -> null
     }
 

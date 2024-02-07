@@ -1,6 +1,8 @@
 package io.finbridge.vepay.moneytransfersdk.presentation.fragments.yourCard
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Insets
 import android.graphics.PorterDuff
 import android.graphics.Rect
@@ -58,10 +60,17 @@ class YourCardFragment : Fragment() {
     }
     private val cardAdapter = CardAdapter(
         controllerColor = { rectangle, colorRes ->
-            rectangle.setColorFilter(
-                requireContext().getColor(colorRes),
-                PorterDuff.Mode.SRC_IN
-            )
+            if (colorRes != R.color.ice) {
+                rectangle.setColorFilter(
+                    requireContext().getColor(colorRes),
+                    PorterDuff.Mode.SRC_IN
+                )
+            } else {
+                rectangle.setColorFilter(
+                    requireContext().getColor(colorRes),
+                    PorterDuff.Mode.MULTIPLY
+                )
+            }
             binding.bankInfo.setCardBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
@@ -204,7 +213,8 @@ class YourCardFragment : Fragment() {
         val bankInfo = CardBank.getType(cardNumber)
         val logo = bankInfo.getLogoRes()
         val icon = bankInfo.getIconRes()
-        val psIcon = cardType.getCardInfoIconRes()
+        val psIcon =
+            if (bankInfo != CardBank.UNKNOWN) cardType.getCardInfoIconRes() else cardType.getIconRes()
         val bankName = requireContext().getString(bankInfo.getNameRes())
 
         viewModel.editBankName(bankName)
@@ -217,7 +227,6 @@ class YourCardFragment : Fragment() {
             if (cardNumber.isEmpty() || psIcon == null) {
                 icPs.isVisible = false
             } else {
-                bankNameLogo.isVisible = true
                 icPs.isVisible = true
                 icPs.setImageResource(psIcon)
             }
@@ -355,29 +364,54 @@ class YourCardFragment : Fragment() {
     private fun updateColor(bankInfo: CardBank) {
         when (bankInfo) {
             CardBank.UNKNOWN -> {
-                viewModel.editColor(R.color.strawberry)
+                textColorTint(R.color.coal, R.color.coal48)
+                viewModel.editColor(R.color.ice)
             }
 
             CardBank.ALFA_BANK -> {
+                textColorTint(R.color.ice, R.color.ice24)
                 viewModel.editColor(R.color.alfa_card)
             }
 
             CardBank.SBER_BANK -> {
+                textColorTint(R.color.ice, R.color.ice24)
                 viewModel.editColor(R.color.sbrebank_card)
             }
 
             CardBank.TINKOFF_BANK -> {
+                textColorTint(R.color.ice, R.color.ice24)
                 viewModel.editColor(R.color.tinkoff_card)
             }
 
             CardBank.RAIFFEISEN_BANK -> {
+                textColorTint(R.color.ice, R.color.ice24)
                 viewModel.editColor(R.color.raifasenk_card)
             }
 
             else -> {
-                viewModel.editColor(R.color.strawberry)
+                textColorTint(R.color.coal, R.color.coal48)
+                viewModel.editColor(R.color.ice)
             }
         }
+    }
+
+    private fun textColorTint(color: Int, colorHint: Int) {
+        binding.editCardNumber.setTextColor(ContextCompat.getColor(requireContext(), color))
+        binding.labelDate.setTextColor(ContextCompat.getColor(requireContext(), color))
+        binding.editCardDate.setTextColor(ContextCompat.getColor(requireContext(), color))
+        binding.editCardDate.setHintTextColor(ContextCompat.getColor(requireContext(), colorHint))
+        binding.cardNumberBottomGradient.background = if (color == R.color.ice) {
+            ContextCompat.getDrawable(requireContext(), R.drawable.white_underline_gradient)
+        } else {
+            ContextCompat.getDrawable(requireContext(), R.drawable.black_underline_gradient)
+        }
+        binding.bankInfo.setStrokeColor(
+            if (color == R.color.ice) {
+                ColorStateList.valueOf(Color.TRANSPARENT)
+            } else {
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.coal24))
+            }
+        )
     }
 
     private fun getPercentage(view: View): Double {

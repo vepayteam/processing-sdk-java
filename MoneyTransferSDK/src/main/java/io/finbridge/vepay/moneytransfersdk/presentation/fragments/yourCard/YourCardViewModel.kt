@@ -28,7 +28,7 @@ class YourCardViewModel @Inject constructor(
             CardUi(
                 id = ID_ADD,
                 iconRes = R.drawable.ic_add,
-                bankName = "Введите данные карты",
+                bankName = "Новая карта",
                 isActive = false
             )
         )

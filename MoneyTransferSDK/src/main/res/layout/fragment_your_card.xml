@@ -46,7 +46,7 @@
             android:id="@+id/cardLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-16dp"
+            android:layout_marginTop="-3dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rcCard">
@@ -68,12 +68,14 @@
                         android:id="@+id/bankInfo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/strawberry"
+                        app:cardBackgroundColor="@color/ice"
                         app:cardCornerRadius="@dimen/card_corner_radius_30dp"
                         app:layout_constraintBottom_toTopOf="@+id/cvvInfo"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/cardLayout">
+                        app:layout_constraintTop_toTopOf="@id/cardLayout"
+                        app:strokeColor="@color/coal24"
+                        app:strokeWidth="2dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -98,7 +100,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/inter"
-                                    android:textColor="@color/ice"
+                                    android:textColor="@color/coal"
                                     android:textSize="@dimen/text_size_28sp"
                                     tools:text="Сбербанк" />
                             </LinearLayout>
@@ -120,17 +122,18 @@
                                     android:imeOptions="actionNext"
                                     android:inputType="number"
                                     android:nextFocusDown="@id/til_card_data"
-                                    android:textColor="@color/ice"
-                                    android:textColorHint="@color/ice24"
+                                    android:textColor="@color/coal"
+                                    android:textColorHint="@color/coal48"
                                     android:textStyle="bold"
                                     tools:text="4242 4242 4242 4242" />
 
                             </com.google.android.material.textfield.TextInputLayout>
 
                             <View
+                                android:id="@+id/cardNumberBottomGradient"
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:background="@drawable/underline_gradient" />
+                                android:background="@drawable/black_underline_gradient" />
 
                             <TextView
                                 android:id="@+id/labelDate"
@@ -140,7 +143,7 @@
                                 android:layout_marginBottom="@dimen/margin_2dp"
                                 android:fontFamily="@font/inter"
                                 android:text="@string/yourCard_Fragment_label_date"
-                                android:textColor="@color/ice"
+                                android:textColor="@color/coal"
                                 android:textSize="@dimen/text_size_12sp" />
 
                             <LinearLayout
@@ -148,29 +151,29 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/til_card_data"
-                                style="@style/textInputLayout"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/edit_card_date"
-                                    style="@style/textInputEditTextCard"
-                                    android:layout_width="wrap_content"
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/til_card_data"
+                                    style="@style/textInputLayout"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:background="@null"
-                                    android:digits="0123456789/"
-                                    android:hint="@string/yourCard_Fragment_your_card_fragment_card_date"
-                                    android:imeOptions="actionNext"
-                                    android:inputType="number"
-                                    android:letterSpacing="0.1"
-                                    android:nextFocusDown="@id/edit_card_holder"
-                                    android:textColor="@color/ice"
-                                    android:textColorHint="@color/ice24"
-                                    android:textStyle="bold" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                                    android:layout_weight="1">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edit_card_date"
+                                        style="@style/textInputEditTextCard"
+                                        android:textStyle="bold"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@null"
+                                        android:digits="0123456789/"
+                                        android:hint="@string/yourCard_Fragment_your_card_fragment_card_date"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="number"
+                                        android:letterSpacing="0.1"
+                                        android:nextFocusDown="@id/edit_card_holder"
+                                        android:textColor="@color/coal"
+                                        android:textColorHint="@color/coal48" />
+                                </com.google.android.material.textfield.TextInputLayout>
 
                                 <ImageView
                                     android:id="@+id/icPs"
@@ -237,7 +240,8 @@
                                             android:maxLength="3"
                                             android:textColor="@color/coal48"
                                             android:textSize="@dimen/text_size_24sp"
-                                            tools:ignore="SpeakableTextPresentCheck" />
+                                            android:textStyle="bold"
+                                        tools:ignore="SpeakableTextPresentCheck" />
                                     </com.google.android.material.textfield.TextInputLayout>
 
                                     <TextView
@@ -291,18 +295,18 @@
             android:id="@+id/cardError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_16dp"
             android:layout_marginStart="@dimen/margin_24dp"
+            android:layout_marginTop="@dimen/margin_16dp"
             android:background="@color/white"
-            android:text="@string/yourCard_Fragment_card_number_error"
-            android:textColor="@color/pale_red"
-            android:gravity="center_vertical"
             android:drawableStart="@drawable/ic_invalid_card_number_24"
             android:drawablePadding="@dimen/padding_4dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:gravity="center_vertical"
+            android:text="@string/yourCard_Fragment_card_number_error"
+            android:textColor="@color/pale_red"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardLayout"
-            android:visibility="gone"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardLayout" />
 
         <androidx.constraintlayout.helper.widget.Flow
             android:id="@+id/imagesFlow"
