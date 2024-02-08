@@ -23,7 +23,7 @@
     <string name="yourCard_Fragment_sec_pay0">Дополнительная защита онлайн платежей</string>
     <string name="yourCard_Fragment_buttom_pay_label">Сделать перевод</string>
     <string name="yourCard_Fragment_label_pay">Перевод без коммиссии</string>
-    <string name="yourCard_Fragment_your_card_title">Ваша карта</string>
+    <string name="yourCard_Fragment_your_card_title">Оплата</string>
     <string name="yourCard_Fragment_your_card_fragment_card_date">●●/●●</string>
     <string name="yourCard_Fragment_title_cvv_cvc">CVV / CVC</string>
     <string name="yourCard_Fragment_visible_card_info">visible card info</string>
@@ -33,6 +33,7 @@
     <string name="yourCard_Fragment_sber_bank_label">СберБанк</string>
     <string name="yourCard_Fragment_tinkoff_bank_label">Тинькофф Банк</string>
     <string name="yourCard_Fragment_raiff_bank_label">Райффайзен Банк</string>
+    <string name="yourCard_Fragment_card_number_error">Неверный номер карты</string>
 
     //Payments errors
     <string name="invoice_payment_default_error">Ошибка проведения платежа</string>

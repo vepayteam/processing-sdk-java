@@ -3,6 +3,7 @@
     <!--    paddings   -->
     <dimen name="padding_0dp">0dp</dimen>
     <dimen name="padding_2dp">2dp</dimen>
+    <dimen name="padding_4dp">4dp</dimen>
     <dimen name="padding_8dp">8dp</dimen>
     <dimen name="padding_16dp">16dp</dimen>
 
@@ -24,7 +25,9 @@
     <dimen name="text_size_16sp">16sp</dimen>
     <dimen name="text_size_20sp">20sp</dimen>
     <dimen name="text_size_24sp">24sp</dimen>
+    <dimen name="text_size_28sp">28sp</dimen>
     <dimen name="text_size_34sp">34sp</dimen>
+    <dimen name="text_size_40sp">40sp</dimen>
 
     <!--    ThreeDS fragment   -->
     <dimen name="close_button_corner_radius">10dp</dimen>

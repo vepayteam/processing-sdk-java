@@ -25,8 +25,7 @@ class CardAdapter(
 
                 when (this) {
                     is ItemCardBinding -> {
-                        tvTitle.text = item.name
-                        tvLabel.text = item.bankName
+                        cardNumber.text = item.bankName
                         imgLogo.setImageResource(item.iconRes)
                         cardView.setOnClickListener {
                             onClick.invoke(item, adapterPosition)
@@ -35,8 +34,7 @@ class CardAdapter(
                     }
 
                     is ItemCardActiveBinding -> {
-                        tvTitle.text = item.name
-                        tvLabel.text = item.bankName
+                        cardNumber.text = item.bankName
                         imgLogo.setImageResource(item.iconRes)
                         item.colorRectangleRes?.let { controllerColor(imgRectangle, it) }
                         cardView.setOnClickListener {
