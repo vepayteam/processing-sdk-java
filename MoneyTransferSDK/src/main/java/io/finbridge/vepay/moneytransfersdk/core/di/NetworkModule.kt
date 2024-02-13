@@ -5,12 +5,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.finbridge.vepay.moneytransfersdk.data.repository.InvoiceRepository
-import io.finbridge.vepay.moneytransfersdk.data.repository.InvoiceRepositoryImpl
 import io.finbridge.vepay.moneytransfersdk.data.repository.PaymentRepository
 import io.finbridge.vepay.moneytransfersdk.data.repository.PaymentRepositoryImpl
-import io.finbridge.vepay.moneytransfersdk.data.repository.RefundsPaymentRepository
-import io.finbridge.vepay.moneytransfersdk.data.repository.RefundsPaymentRepositoryImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -84,18 +80,10 @@ class NetworkModule {
     }
 
     @Provides
-    fun getInvoiceRepository(invoiceRepository: InvoiceRepositoryImpl): InvoiceRepository =
-        invoiceRepository
-
-    @Provides
     fun getPaymentRepository(
         paymentRepository: PaymentRepositoryImpl,
     ): PaymentRepository =
         paymentRepository
-
-    @Provides
-    fun getRefundsPaymentRepository(refundsPaymentRepository: RefundsPaymentRepositoryImpl): RefundsPaymentRepository =
-        refundsPaymentRepository
 
     companion object {
         private const val BASE_URL = "test.vepay.online/h2hapi/v1"

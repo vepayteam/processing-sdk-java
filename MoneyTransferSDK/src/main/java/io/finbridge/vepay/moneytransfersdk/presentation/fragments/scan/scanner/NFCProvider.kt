@@ -1,4 +1,4 @@
-package io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner
+package io.finbridge.vepay.moneytransfersdk.presentation.fragments.scan.scanner
 
 import android.nfc.tech.IsoDep
 import com.github.devnied.emvnfccard.exception.CommunicationException

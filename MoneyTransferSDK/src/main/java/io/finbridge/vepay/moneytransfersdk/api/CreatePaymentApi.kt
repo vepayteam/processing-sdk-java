@@ -13,16 +13,17 @@ import javax.inject.Inject
 
 class CreatePaymentApi @Inject constructor(
     private val httpClient: HttpClient,
-) : KtorApiParameterRequest<String, PaymentRequest, Response<PaymentResponse>> {
+) : KtorApiParameterRequest<String, String, PaymentRequest, Response<PaymentResponse>> {
 
     override suspend fun execute(
         id: String,
+        xUser: String,
         paymentRequest: PaymentRequest,
     ): Response<PaymentResponse> {
         return getApiContentSafeOperation<PaymentResponse> {
             httpClient.put("invoices/$id/payment") {
                 setBody(paymentRequest)
-                header("X-User", "376")
+                header("X-User", xUser)
             }.body()
         }
     }

@@ -7,10 +7,8 @@ import io.finbridge.vepay.moneytransfersdk.core.utils.PaymentError
 import io.finbridge.vepay.moneytransfersdk.core.utils.emptyString
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.ResourceProvider
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.checkForInternet
-import io.finbridge.vepay.moneytransfersdk.data.models.network.AcsRedirect
 import io.finbridge.vepay.moneytransfersdk.data.models.network.BrowserData
 import io.finbridge.vepay.moneytransfersdk.data.models.network.CardRequest
-import io.finbridge.vepay.moneytransfersdk.data.models.network.CardResponse
 import io.finbridge.vepay.moneytransfersdk.data.models.network.HeaderMap
 import io.finbridge.vepay.moneytransfersdk.data.models.network.PaymentRequest
 import io.finbridge.vepay.moneytransfersdk.data.models.network.PaymentResponse
@@ -34,14 +32,15 @@ class InvoicePaymentUseCase @Inject constructor(
 ) {
     suspend fun pay(
         id: String,
+        xUser: String,
         card: Card,
         screenHeight: Int,
         screenWidth: Int,
     ): Either<ErrorInvoicePayment, PaymentResponse> {
-        // return testAnswer()  //TODO удалить метод и его вызов
         if (checkForInternet(resourceProvider.getContext())) {
             paymentRepository.createPayment(
                 id = id,
+                xUser = xUser,
                 paymentRequest = getPaymentRequest(
                     card = card,
                     screenHeight = screenHeight,
@@ -97,24 +96,6 @@ class InvoicePaymentUseCase @Inject constructor(
             Locale.getDefault()
         )
         return calendar.time.timezoneOffset
-    }
-
-    private fun testAnswer(): Either.Right<PaymentResponse> {
-        return Either.Right(
-            PaymentResponse(
-                acsRedirect = AcsRedirect(
-                    status = "OK",
-                    url = "https://xn--90aggfb2aw2a.xn--p1ai/",
-                    method = null,
-                    postParameters = null
-                ),
-                CardResponse(
-                    cardNumber = emptyString(),
-                    cardHolder = emptyString(),
-                    expires = emptyString(),
-                )
-            )
-        )
     }
 
     fun getIPAddress(useIPv4: Boolean): String? {

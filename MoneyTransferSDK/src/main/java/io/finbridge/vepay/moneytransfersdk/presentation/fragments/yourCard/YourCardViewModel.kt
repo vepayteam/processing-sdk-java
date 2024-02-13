@@ -209,12 +209,14 @@ class YourCardViewModel @Inject constructor(
 
     fun pay(
         id: String,
+        xUser: String,
         screenHeight: Int,
         screenWidth: Int,
     ) {
         viewModelScope.launch {
             invoicePaymentUseCase.pay(
                 id = id,
+                xUser = xUser,
                 card = cardModel.value.first().card,
                 screenHeight = screenHeight,
                 screenWidth = screenWidth
