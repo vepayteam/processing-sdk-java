@@ -32,6 +32,8 @@ import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardBank
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardType
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardUi
 import io.finbridge.vepay.moneytransfersdk.databinding.FragmentYourCardBinding
+import io.finbridge.vepay.moneytransfersdk.presentation.MoneyTransferActivity.Companion.UUID_KEY
+import io.finbridge.vepay.moneytransfersdk.presentation.MoneyTransferActivity.Companion.XUSER_KEY
 import io.finbridge.vepay.moneytransfersdk.presentation.adapter.CardAdapter
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.threeds.ThreeDSFragment
 import kotlinx.coroutines.launch
@@ -46,6 +48,8 @@ class YourCardFragment : Fragment() {
     private val viewModel: YourCardViewModel by viewModels()
     private val invoiceUuid: String
         get() = requireArguments().getString(UUID_KEY) ?: emptyString()
+    private val xUser: String
+        get() = requireArguments().getString(XUSER_KEY) ?: emptyString()
     private val cardNumberFormatWatcher by lazy {
         val descriptor = MaskDescriptor.ofRawMask(CARD_NUMBER_MASK).setTerminated(true)
             .setForbidInputWhenFilled(true)
@@ -115,6 +119,7 @@ class YourCardFragment : Fragment() {
                 }
                 viewModel.pay(
                     id = invoiceUuid,
+                    xUser = xUser,
                     screenHeight = getScreenHeight(),
                     screenWidth = getScreenWidth(),
                 )
@@ -451,16 +456,18 @@ class YourCardFragment : Fragment() {
     }
 
     companion object {
-        private const val UUID_KEY = "uuid_invoice"
+        //private const val XUSER_KEY = "xuser_invoice"
+        //private const val UUID_KEY = "uuid_invoice"
         private const val CARD_NUMBER_MASK = "____ ____ ____ ____"
         private const val CARD_DATE_MASK = "__/__"
         private const val CARD_NUMBER_MAX_LENGTH = 19
         private const val CVV_MAX_LENGTH = 3
 
         @JvmStatic
-        fun newInstance(invoiceUuid: String) = YourCardFragment().apply {
+        fun newInstance(invoiceUuid: String, xUser: String) = YourCardFragment().apply {
             arguments = bundleOf(
-                UUID_KEY to invoiceUuid
+                UUID_KEY to invoiceUuid,
+                XUSER_KEY to xUser,
             )
         }
     }

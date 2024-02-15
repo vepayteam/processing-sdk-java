@@ -24,7 +24,10 @@ class MoneyTransferActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container,
-                YourCardFragment.newInstance(intent.getStringExtra(UUID_KEY) ?: emptyString())
+                YourCardFragment.newInstance(
+                    invoiceUuid = intent.getStringExtra(UUID_KEY) ?: emptyString(),
+                    xUser = intent.getStringExtra(XUSER_KEY) ?: emptyString()
+                )
             ).commit()
         }
 
@@ -42,6 +45,7 @@ class MoneyTransferActivity : AppCompatActivity() {
 
     companion object {
         const val UUID_KEY = "uuid_key"
+        const val XUSER_KEY = "xuser_invoice"
         const val TRANSFER_STATUS_KEY = "transfer_status_key"
     }
 }

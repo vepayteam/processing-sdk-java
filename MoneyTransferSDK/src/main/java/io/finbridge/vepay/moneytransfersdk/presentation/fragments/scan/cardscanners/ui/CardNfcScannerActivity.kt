@@ -1,4 +1,4 @@
-package io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.cardscanners.ui
+package io.finbridge.vepay.moneytransfersdk.presentation.fragments.scan.cardscanners.ui
 
 import android.app.Activity
 import android.app.PendingIntent
@@ -15,8 +15,8 @@ import io.finbridge.vepay.moneytransfersdk.R
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.dataValidation
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.getSafetyParcelableExtra
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.Card
-import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.NFCProvider
-import io.finbridge.vepay.moneytransfersdk.presentation.fragments.cardpay.scanner.ScannerType
+import io.finbridge.vepay.moneytransfersdk.presentation.fragments.scan.scanner.NFCProvider
+import io.finbridge.vepay.moneytransfersdk.presentation.fragments.scan.scanner.ScannerType
 import java.util.Date
 import java.util.Calendar
 

@@ -7,7 +7,7 @@
 
     <application>
         <activity
-            android:name=".presentation.fragments.cardpay.cardscanners.ui.CardNfcScannerActivity"
+            android:name=".presentation.fragments.scan.cardscanners.ui.CardNfcScannerActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.MoneyTransferActivity"
