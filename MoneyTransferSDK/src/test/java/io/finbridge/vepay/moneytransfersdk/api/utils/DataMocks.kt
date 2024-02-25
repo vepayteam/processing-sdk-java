@@ -17,9 +17,9 @@ object DataMocks {
             url = "https://some-access-control-server.com/3ds?payId=123",
             method = "POST",
             postParameters = PostParameters(
-                paReq = "K8QufpC0UQXOoYcNlfT857Tvu15Wli12WXyvCyTX8AKY2QyMUCk",
-                md = "YcNlfT857Tvu15Wli12WXyvCyTX8AKY2QyMUCkGMifQ==",
-                termUrl = "https://api.vepay.online/pay/orderdone/12345"
+                paReq = null,
+                md = null,
+                termUrl = null
             )
         ),
         cardResponse = CardResponse(
@@ -32,7 +32,7 @@ object DataMocks {
     val paymentRequest = PaymentRequest(
         ip = "108.177.16.21",
         card = CardRequest(
-            cardNumber = "4111111111111111",
+            cardNumber = "4917610000000000",
             cardHolder = "Terentiev Mihail",
             expires = "0122",
             cvc = "123"

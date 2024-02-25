@@ -1,6 +1,6 @@
 package io.finbridge.vepay.moneytransfersdk.api.utils
 
-internal const val GetPaymentResponse = """
+internal const val CreatePaymentResponse = """
 {
   "acsRedirect": {
     "status": "OK",

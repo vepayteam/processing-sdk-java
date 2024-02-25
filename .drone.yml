@@ -23,7 +23,7 @@ steps:
 
 - name: check-for-conventional-commits
   pull: if-not-exists
-  image: aevea/commitsar:0.15.0
+  image: registry.vepay.dev/docker.io/aevea/commitsar:0.20.2
   commands:
   - commitsar -v -s
 
@@ -41,9 +41,82 @@ steps:
     - failure
     - success
 
+- name: s3-cache-restore-18ccaf9d0df5542840d96ebf6da80654
+  pull: always
+  image: registry.vepay.dev/docker.io/plugins/s3-cache
+  settings:
+    access_key:
+      from_secret: CACHE_ACCESS_KEY_ID
+    endpoint: https://s3.vepay.dev
+    fallback_path: ${DRONE_REPO}
+    flush_age: 90
+    flush_path: ${DRONE_REPO}
+    mode: restore
+    mount:
+    - /drone/.gradle/caches
+    - /drone/.gradle/notifications
+    path: ${DRONE_REPO}
+    region: ru-central-1
+    root: /drone/build/cache/
+    secret_key:
+      from_secret: CACHE_SECRET_ACCESS_KEY
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+- name: gradle-cache-prepare
+  pull: if-not-exists
+  image: registry.vepay.dev/library/android-build:33
+  commands:
+  - gradle --build-cache wrapper --gradle-version 7.5 --distribution-type bin
+  environment:
+    GRADLE_OPTS: -Dorg.gradle.jvmargs="-XX:MaxMetaspaceSize=2g -XX:+UseContainerSupport -XX:+HeapDumpOnOutOfMemoryError -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2 -Dfile.encoding=UTF-8" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.caching=true -Dkotlin.compiler.execution.strategy=in-process
+    GRADLE_USER_HOME: /drone/.gradle
+    JAVA_OPTS: -XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+- name: android-test-sdk-app
+  pull: if-not-exists
+  image: registry.vepay.dev/library/android-build:33
+  commands:
+  - ./gradlew clean lint test --stacktrace
+  - ./gradlew koverVerifyDebug koverXmlReportDebug
+  environment:
+    GRADLE_OPTS: -Dorg.gradle.jvmargs="-XX:MaxMetaspaceSize=2g -XX:+UseContainerSupport -XX:+HeapDumpOnOutOfMemoryError -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2 -Dfile.encoding=UTF-8" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.caching=true -Dkotlin.compiler.execution.strategy=in-process
+    GRADLE_USER_HOME: /drone/.gradle
+    JAVA_OPTS: -XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+- name: s3-cache-rebuild-18ccaf9d0df5542840d96ebf6da80654
+  pull: always
+  image: registry.vepay.dev/docker.io/plugins/s3-cache
+  settings:
+    access_key:
+      from_secret: CACHE_ACCESS_KEY_ID
+    endpoint: https://s3.vepay.dev
+    fallback_path: ${DRONE_REPO}
+    flush_age: 90
+    flush_path: ${DRONE_REPO}
+    mode: rebuild
+    mount:
+    - /drone/.gradle/caches
+    - /drone/.gradle/notifications
+    path: ${DRONE_REPO}
+    region: ru-central-1
+    root: /drone/build/cache/
+    secret_key:
+      from_secret: CACHE_SECRET_ACCESS_KEY
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
 - name: sonarqube-scanner
   pull: always
-  image: registry.vepay.dev/drone/sonar-scanner:node-18
+  image: registry.vepay.dev/drone/sonar-scanner:android-java-17
   settings:
     sonar_host: https://sonarqube.vepay.dev
     sonar_loglevel: INFO
@@ -51,6 +124,38 @@ steps:
   environment:
     SONAR_TOKEN:
       from_secret: SONAR_TOKEN
+
+- name: build-sdk-app
+  pull: if-not-exists
+  image: registry.vepay.dev/library/android-build:33
+  commands:
+  - "cat >c0d8caef3498fb3e461ccb8d45f5e463 <<EOF\n// https://developer.android.com/build/publish-library/configure-pub-variants\npublishing {\n    publications {\n        release(MavenPublication) {\n            version 'PR-${DRONE_PULL_REQUEST}.build.${DRONE_BUILD_NUMBER}'\n            afterEvaluate {\n                from components.default\n            }\n        }\n    }\n    repositories {\n        maven {\n            name = \"VepayDev\"\n            url = uri(\"https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven\")\n\n            credentials(HttpHeaderCredentials) {\n                name = \"Authorization\"\n                value = \"token $${GITEA_TOKEN}\"\n            }\n\n            authentication {\n                header(HttpHeaderAuthentication)\n            }\n        }\n    }\n}\nEOF\n"
+  - "echo \"apply from: '../c0d8caef3498fb3e461ccb8d45f5e463'\" >> MoneyTransferSDK/build.gradle"
+  - sed -ri -e "s,https://jitpack.io,https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven,g" settings.gradle
+  - ./gradlew clean -xtest -xlint assemble publishAllPublicationsToVepayDevRepository
+  - "for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSsf -H \"Authorization: token $${GITEA_TOKEN}\" --upload-file $$f https://git.vepay.dev/api/packages/${DRONE_REPO_NAMESPACE}/generic/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}/$$(basename $$f); done"
+  environment:
+    GITEA_TOKEN:
+      from_secret: GITEA_TOKEN
+    GRADLE_OPTS: -Dorg.gradle.jvmargs="-XX:MaxMetaspaceSize=2g -XX:+UseContainerSupport -XX:+HeapDumpOnOutOfMemoryError -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2 -Dfile.encoding=UTF-8" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.caching=true -Dkotlin.compiler.execution.strategy=in-process
+    GRADLE_USER_HOME: /drone/.gradle
+    JAVA_OPTS: -XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+- name: notify-debug-apk-url-08c9a46106afff54c9bbc81e0e974a76
+  pull: always
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - gitea-status -t "debug-apk/url" -m "${DRONE_REPO_NAME}" -s "success" -u "https://git.vepay.dev/${DRONE_REPO_NAMESPACE}/-/packages/generic/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}"
+  environment:
+    GITEA_TOKEN:
+      from_secret: GITEA_TOKEN
+
+volumes:
+- name: gradle
+  temp: {}
 
 image_pull_secrets:
 - dockerconfig
@@ -77,9 +182,82 @@ workspace:
   path: /drone/src
 
 steps:
+- name: s3-cache-restore-18ccaf9d0df5542840d96ebf6da80654
+  pull: always
+  image: registry.vepay.dev/docker.io/plugins/s3-cache
+  settings:
+    access_key:
+      from_secret: CACHE_ACCESS_KEY_ID
+    endpoint: https://s3.vepay.dev
+    fallback_path: ${DRONE_REPO}
+    flush_age: 90
+    flush_path: ${DRONE_REPO}
+    mode: restore
+    mount:
+    - /drone/.gradle/caches
+    - /drone/.gradle/notifications
+    path: ${DRONE_REPO}
+    region: ru-central-1
+    root: /drone/build/cache/
+    secret_key:
+      from_secret: CACHE_SECRET_ACCESS_KEY
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+- name: gradle-cache-prepare
+  pull: if-not-exists
+  image: registry.vepay.dev/library/android-build:33
+  commands:
+  - gradle --build-cache wrapper --gradle-version 7.5 --distribution-type bin
+  environment:
+    GRADLE_OPTS: -Dorg.gradle.jvmargs="-XX:MaxMetaspaceSize=2g -XX:+UseContainerSupport -XX:+HeapDumpOnOutOfMemoryError -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2 -Dfile.encoding=UTF-8" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.caching=true -Dkotlin.compiler.execution.strategy=in-process
+    GRADLE_USER_HOME: /drone/.gradle
+    JAVA_OPTS: -XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+- name: android-test-sdk-app
+  pull: if-not-exists
+  image: registry.vepay.dev/library/android-build:33
+  commands:
+  - ./gradlew clean lint test --stacktrace
+  - ./gradlew koverVerifyDebug koverXmlReportDebug
+  environment:
+    GRADLE_OPTS: -Dorg.gradle.jvmargs="-XX:MaxMetaspaceSize=2g -XX:+UseContainerSupport -XX:+HeapDumpOnOutOfMemoryError -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2 -Dfile.encoding=UTF-8" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.caching=true -Dkotlin.compiler.execution.strategy=in-process
+    GRADLE_USER_HOME: /drone/.gradle
+    JAVA_OPTS: -XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+- name: s3-cache-rebuild-18ccaf9d0df5542840d96ebf6da80654
+  pull: always
+  image: registry.vepay.dev/docker.io/plugins/s3-cache
+  settings:
+    access_key:
+      from_secret: CACHE_ACCESS_KEY_ID
+    endpoint: https://s3.vepay.dev
+    fallback_path: ${DRONE_REPO}
+    flush_age: 90
+    flush_path: ${DRONE_REPO}
+    mode: rebuild
+    mount:
+    - /drone/.gradle/caches
+    - /drone/.gradle/notifications
+    path: ${DRONE_REPO}
+    region: ru-central-1
+    root: /drone/build/cache/
+    secret_key:
+      from_secret: CACHE_SECRET_ACCESS_KEY
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
 - name: sonarqube-scanner
   pull: always
-  image: registry.vepay.dev/drone/sonar-scanner:node-18
+  image: registry.vepay.dev/drone/sonar-scanner:android-java-17
   settings:
     sonar_host: https://sonarqube.vepay.dev
     sonar_loglevel: INFO
@@ -87,6 +265,38 @@ steps:
   environment:
     SONAR_TOKEN:
       from_secret: SONAR_TOKEN
+
+- name: build-sdk-app
+  pull: if-not-exists
+  image: registry.vepay.dev/library/android-build:33
+  commands:
+  - "cat >7520011c4f38d9b4d8515872a240cc71 <<EOF\n// https://developer.android.com/build/publish-library/configure-pub-variants\npublishing {\n    publications {\n        release(MavenPublication) {\n            version '${DRONE_BRANCH}.build.${DRONE_BUILD_NUMBER}'\n            afterEvaluate {\n                from components.default\n            }\n        }\n    }\n    repositories {\n        maven {\n            name = \"VepayDev\"\n            url = uri(\"https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven\")\n\n            credentials(HttpHeaderCredentials) {\n                name = \"Authorization\"\n                value = \"token $${GITEA_TOKEN}\"\n            }\n\n            authentication {\n                header(HttpHeaderAuthentication)\n            }\n        }\n    }\n}\nEOF\n"
+  - "echo \"apply from: '../7520011c4f38d9b4d8515872a240cc71'\" >> MoneyTransferSDK/build.gradle"
+  - sed -ri -e "s,https://jitpack.io,https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven,g" settings.gradle
+  - ./gradlew clean -xtest -xlint assemble publishAllPublicationsToVepayDevRepository
+  - "for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSsf -H \"Authorization: token $${GITEA_TOKEN}\" --upload-file $$f https://git.vepay.dev/api/packages/${DRONE_REPO_NAMESPACE}/generic/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}/$$(basename $$f); done"
+  environment:
+    GITEA_TOKEN:
+      from_secret: GITEA_TOKEN
+    GRADLE_OPTS: -Dorg.gradle.jvmargs="-XX:MaxMetaspaceSize=2g -XX:+UseContainerSupport -XX:+HeapDumpOnOutOfMemoryError -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2 -Dfile.encoding=UTF-8" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.caching=true -Dkotlin.compiler.execution.strategy=in-process
+    GRADLE_USER_HOME: /drone/.gradle
+    JAVA_OPTS: -XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+- name: notify-debug-apk-url-08c9a46106afff54c9bbc81e0e974a76
+  pull: always
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - gitea-status -t "debug-apk/url" -m "${DRONE_REPO_NAME}" -s "success" -u "https://git.vepay.dev/${DRONE_REPO_NAMESPACE}/-/packages/generic/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}"
+  environment:
+    GITEA_TOKEN:
+      from_secret: GITEA_TOKEN
+
+volumes:
+- name: gradle
+  temp: {}
 
 image_pull_secrets:
 - dockerconfig
@@ -98,6 +308,202 @@ trigger:
   - push
 
 ---
+kind: pipeline
+type: docker
+name: build-deploy-main-push
+
+platform:
+  os: linux
+  arch: amd64
+
+concurrency:
+  limit: 2
+
+workspace:
+  path: /drone/src
+
+steps:
+- name: s3-cache-restore-18ccaf9d0df5542840d96ebf6da80654
+  pull: always
+  image: registry.vepay.dev/docker.io/plugins/s3-cache
+  settings:
+    access_key:
+      from_secret: CACHE_ACCESS_KEY_ID
+    endpoint: https://s3.vepay.dev
+    fallback_path: ${DRONE_REPO}
+    flush_age: 90
+    flush_path: ${DRONE_REPO}
+    mode: restore
+    mount:
+    - /drone/.gradle/caches
+    - /drone/.gradle/notifications
+    path: ${DRONE_REPO}
+    region: ru-central-1
+    root: /drone/build/cache/
+    secret_key:
+      from_secret: CACHE_SECRET_ACCESS_KEY
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+- name: gradle-cache-prepare
+  pull: if-not-exists
+  image: registry.vepay.dev/library/android-build:33
+  commands:
+  - gradle --build-cache wrapper --gradle-version 7.5 --distribution-type bin
+  environment:
+    GRADLE_OPTS: -Dorg.gradle.jvmargs="-XX:MaxMetaspaceSize=2g -XX:+UseContainerSupport -XX:+HeapDumpOnOutOfMemoryError -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2 -Dfile.encoding=UTF-8" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.caching=true -Dkotlin.compiler.execution.strategy=in-process
+    GRADLE_USER_HOME: /drone/.gradle
+    JAVA_OPTS: -XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+
+- name: s3-cache-rebuild-18ccaf9d0df5542840d96ebf6da80654
+  pull: always
+  image: registry.vepay.dev/docker.io/plugins/s3-cache
+  settings:
+    access_key:
+      from_secret: CACHE_ACCESS_KEY_ID
+    endpoint: https://s3.vepay.dev
+    fallback_path: ${DRONE_REPO}
+    flush_age: 90
+    flush_path: ${DRONE_REPO}
+    mode: rebuild
+    mount:
+    - /drone/.gradle/caches
+    - /drone/.gradle/notifications
+    path: ${DRONE_REPO}
+    region: ru-central-1
+    root: /drone/build/cache/
+    secret_key:
+      from_secret: CACHE_SECRET_ACCESS_KEY
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+
+- name: build-sdk-app
+  pull: if-not-exists
+  image: registry.vepay.dev/library/android-build:33
+  commands:
+  - "cat >6db1e3f8bd5b6502f14bfbd4db4176fc <<EOF\n// https://developer.android.com/build/publish-library/configure-pub-variants\npublishing {\n    publications {\n        release(MavenPublication) {\n            version 'production.build.${DRONE_BUILD_NUMBER}'\n            afterEvaluate {\n                from components.default\n            }\n        }\n    }\n    repositories {\n        maven {\n            name = \"VepayDev\"\n            url = uri(\"https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven\")\n\n            credentials(HttpHeaderCredentials) {\n                name = \"Authorization\"\n                value = \"token $${GITEA_TOKEN}\"\n            }\n\n            authentication {\n                header(HttpHeaderAuthentication)\n            }\n        }\n    }\n}\nEOF\n"
+  - "echo \"apply from: '../6db1e3f8bd5b6502f14bfbd4db4176fc'\" >> MoneyTransferSDK/build.gradle"
+  - sed -ri -e "s,https://jitpack.io,https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven,g" settings.gradle
+  - ./gradlew clean -xtest -xlint assemble publishAllPublicationsToVepayDevRepository
+  - "for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSsf -H \"Authorization: token $${GITEA_TOKEN}\" --upload-file $$f https://git.vepay.dev/api/packages/${DRONE_REPO_NAMESPACE}/generic/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}/$$(basename $$f); done"
+  environment:
+    GITEA_TOKEN:
+      from_secret: GITEA_TOKEN
+    GRADLE_OPTS: -Dorg.gradle.jvmargs="-XX:MaxMetaspaceSize=2g -XX:+UseContainerSupport -XX:+HeapDumpOnOutOfMemoryError -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2 -Dfile.encoding=UTF-8" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.caching=true -Dkotlin.compiler.execution.strategy=in-process
+    GRADLE_USER_HOME: /drone/.gradle
+    JAVA_OPTS: -XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:MaxRAMPercentage=50 -XX:ActiveProcessorCount=2
+  volumes:
+  - name: gradle
+    path: /drone/.gradle
+
+- name: notify-debug-apk-url-08c9a46106afff54c9bbc81e0e974a76
+  pull: always
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - gitea-status -t "debug-apk/url" -m "${DRONE_REPO_NAME}" -s "success" -u "https://git.vepay.dev/${DRONE_REPO_NAMESPACE}/-/packages/generic/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}"
+  environment:
+    GITEA_TOKEN:
+      from_secret: GITEA_TOKEN
+
+volumes:
+- name: gradle
+  temp: {}
+
+image_pull_secrets:
+- dockerconfig
+
+trigger:
+  branch:
+  - main
+  event:
+  - push
+
+---
+kind: pipeline
+type: docker
+name: tagged-repository-release
+
+platform:
+  os: linux
+  arch: amd64
+
+concurrency:
+  limit: 2
+
+workspace:
+  path: /drone/src
+
+steps:
+- name: generate-release-notes
+  pull: always
+  image: registry.vepay.dev/ci/conventional-changelog
+  commands:
+  - conventional-changelog -p conventionalcommits -r 2 | tail +4 | tee CHANGELOG.md
+
+- name: repository-release-plus-changelog
+  pull: always
+  image: registry.vepay.dev/docker.io/plugins/gitea-release
+  settings:
+    api_key:
+      from_secret: GITEA_TOKEN
+    base_url: https://git.vepay.dev
+    note: CHANGELOG.md
+    title: ${DRONE_TAG}
+
+image_pull_secrets:
+- dockerconfig
+
+trigger:
+  event:
+  - tag
+
+---
+kind: pipeline
+type: docker
+name: build-deploy-promoted-release
+
+platform:
+  os: linux
+  arch: amd64
+
+concurrency:
+  limit: 2
+
+workspace:
+  path: /drone/src
+
+steps:
+- name: push-to-github
+  pull: always
+  image: registry.vepay.dev/docker.io/appleboy/drone-git-push
+  settings:
+    branch: main
+    followtags: true
+    remote: git@github.com:vepayteam/processing-sdk-java.git
+    ssh_key:
+      from_secret: GITHUB_SSH_KEY
+
+volumes:
+- name: gradle
+  temp: {}
+
+image_pull_secrets:
+- dockerconfig
+
+trigger:
+  event:
+  - promote
+  target:
+  - production
+
+---
 kind: secret
 name: GITEA_TOKEN
 
@@ -106,7 +512,23 @@ get:
   name: gitea_token
 
 ---
+kind: secret
+name: GITHUB_SSH_KEY
+
+get:
+  path: drone-die6s
+  name: github_processing_android_sdk_ssh_key
+
+---
+kind: secret
+name: GITHUB_TOKEN
+
+get:
+  path: drone-die6s
+  name: github_token
+
+---
 kind: signature
-hmac: 2fa736a83d72a520a8affb32e24839f1ad9cb7eb4fa897cd465397c9db84d352
+hmac: 102467251f09cd4327e52c51e4779f65dab6951bd0a3517691d195a580b8408e
 
 ...
