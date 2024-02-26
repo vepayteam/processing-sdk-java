@@ -9,7 +9,6 @@ import io.finbridge.vepay.moneytransfersdk.data.models.network.PaymentRequest
 import io.finbridge.vepay.moneytransfersdk.data.models.network.PaymentResponse
 import io.finbridge.vepay.moneytransfersdk.data.models.network.PostParameters
 
-
 object DataMocks {
     val paymentResponse = PaymentResponse(
         acsRedirect = AcsRedirect(
