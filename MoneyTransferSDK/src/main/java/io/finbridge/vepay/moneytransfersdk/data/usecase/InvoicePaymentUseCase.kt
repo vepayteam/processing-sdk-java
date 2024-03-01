@@ -98,7 +98,7 @@ class InvoicePaymentUseCase @Inject constructor(
         return calendar.time.timezoneOffset
     }
 
-    fun getIPAddress(useIPv4: Boolean): String? {
+    private fun getIPAddress(useIPv4: Boolean): String? {
         try {
             val interfaces: List<NetworkInterface> =
                 Collections.list(NetworkInterface.getNetworkInterfaces())
