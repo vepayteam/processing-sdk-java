@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    paddings   -->
+    <dimen name="padding_0dp">0dp</dimen>
+    <dimen name="padding_2dp">2dp</dimen>
+    <dimen name="padding_4dp">4dp</dimen>
+    <dimen name="padding_8dp">8dp</dimen>
+    <dimen name="padding_16dp">16dp</dimen>
+
+    <!--    margins   -->
+    <dimen name="margin_2dp">2dp</dimen>
+    <dimen name="margin_4dp">4dp</dimen>
+    <dimen name="margin_8dp">8dp</dimen>
+    <dimen name="margin_12dp">12dp</dimen>
+    <dimen name="margin_16dp">16dp</dimen>
+    <dimen name="margin_20dp">20dp</dimen>
+    <dimen name="margin_24dp">24dp</dimen>
+    <dimen name="margin_32dp">32dp</dimen>
+    <dimen name="margin_63dp">63dp</dimen>
+    <dimen name="margin_83dp">83dp</dimen>
+    <dimen name="margin_100dp">100dp</dimen>
+
+    <!--    text sizes   -->
+    <dimen name="text_size_12sp">12sp</dimen>
+    <dimen name="text_size_16sp">16sp</dimen>
+    <dimen name="text_size_20sp">20sp</dimen>
+    <dimen name="text_size_24sp">24sp</dimen>
+    <dimen name="text_size_28sp">28sp</dimen>
+    <dimen name="text_size_34sp">34sp</dimen>
+    <dimen name="text_size_40sp">40sp</dimen>
+
+    <!--    ThreeDS fragment   -->
+    <dimen name="close_button_corner_radius">10dp</dimen>
+    <dimen name="close_button_size">32dp</dimen>
+
+    <!--    YourCardFragment   -->
+    <dimen name="card_corner_radius_30dp">30dp</dimen>
+    <dimen name="item_card_size_180dp">180dp</dimen>
+    <dimen name="card_svv_Info_height_size_300dp">300dp</dimen>
+    <dimen name="card_corner_radius_20dp">20dp</dimen>
+    <dimen name="cvv_card_width_104dp">104dp</dimen>
+    <dimen name="cvv_card_height_64dp">64dp</dimen>
+    <dimen name="cvv_card_height_76dp">76dp</dimen>
+    <dimen name="bank_info_height_250dp">250dp</dimen>
+    <dimen name="view_height_40dp">40dp</dimen>
+
+</resources>

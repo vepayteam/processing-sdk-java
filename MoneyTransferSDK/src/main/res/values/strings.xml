@@ -1,0 +1,41 @@
+<resources>
+    <!-- CardPayFragment -->
+    <string name="card_pay_fragment_title">Введите данные карты</string>
+    <string name="card_pay_fragment_card_number">Номер карты</string>
+    <string name="card_pay_fragment_card_date">MM/YY</string>
+    <string name="card_pay_fragment_card_cvc">CVC</string>
+    <string name="card_pay_fragment_card_holder">Владелец карты</string>
+    <string name="card_pay_fragment_payment">Оплатить</string>
+    <string name="card_pay_fragment_camera_scan">Сканирование с помощью камеры</string>
+    <string name="card_pay_fragment_nfc_scan">Сканирование с помощью NFC</string>
+    <string name="card_pay_fragment_scan_error">Ошибка во время сканирования</string>
+
+    <!-- CardNfcScannerActivity -->
+    <string name="card_nfc_scanner_activity_title">Включите NFC на вашем устройстве и прислоните карту к задней части смартфона</string>
+
+    <!-- YourCardFragment -->
+    <string name="yourCard_Fragment_input_card"> Введите номер карты</string>
+    <string name="yourCard_Fragment_check_offers_label">Согласен с</string>
+    <string name="yourCard_Fragment_check_offers_label_link"> <u><a href="http://www.google.com/" target="_blank">условиями оферты</a></u></string>
+    <string name="yourCard_Fragment_label_cart_cvv">Три цифры \nс обратной стороны \nкарты</string>
+    <string name="yourCard_Fragment_label_date">Действует до :</string>
+    <string name="yourCard_Fragment_sec_pay_label">Доступные платежные системы</string>
+    <string name="yourCard_Fragment_sec_pay0">Дополнительная защита онлайн платежей</string>
+    <string name="yourCard_Fragment_buttom_pay_label">Сделать перевод</string>
+    <string name="yourCard_Fragment_label_pay">Перевод без коммиссии</string>
+    <string name="yourCard_Fragment_your_card_title">Оплата</string>
+    <string name="yourCard_Fragment_your_card_fragment_card_date">●●/●●</string>
+    <string name="yourCard_Fragment_title_cvv_cvc">CVV / CVC</string>
+    <string name="yourCard_Fragment_visible_card_info">visible card info</string>
+    <string name="yourCard_Fragment_input_card_data_label">Введите данные карты</string>
+    <string name="yourCard_Fragment_un_bank">Другой банк</string>
+    <string name="yourCard_Fragment_alfa_bank_label">Альфа-банк</string>
+    <string name="yourCard_Fragment_sber_bank_label">СберБанк</string>
+    <string name="yourCard_Fragment_tinkoff_bank_label">Тинькофф Банк</string>
+    <string name="yourCard_Fragment_raiff_bank_label">Райффайзен Банк</string>
+    <string name="yourCard_Fragment_card_number_error">Неверный номер карты</string>
+
+    //Payments errors
+    <string name="invoice_payment_default_error">Ошибка проведения платежа</string>
+    <string name="invoice_payment_no_internet_error">Проверьте соединение с интернетом</string>
+</resources>
