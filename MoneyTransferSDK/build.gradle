@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'com.github.moneytransfersdk'
-version = '0.0.1'
+version = '1.0.0'
 
 android {
     namespace 'io.finbridge.vepay.moneytransfersdk'
@@ -103,6 +103,21 @@ dependencies {
     implementation 'io.arrow-kt:arrow-fx-stm:1.2.0'
     implementation 'io.arrow-kt:arrow-fx-coroutines:1.2.0'
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from(components["release"])
+
+                groupId = "com.github.moneytransfersdk"
+                artifactId = "moneytransfersdk"
+                version = "1.0.0"
+            }
+        }
+    }
+}
+
 
 koverReport {
     // filters for all reports in all variants
