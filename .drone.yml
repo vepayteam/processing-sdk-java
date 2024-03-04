@@ -486,9 +486,21 @@ steps:
   settings:
     branch: main
     followtags: true
-    remote: git@github.com:vepayteam/processing-sdk-java.git
+    force: true
+    remote: ssh://git@ssh.github.com:443/vepayteam/processing-sdk-java.git
     ssh_key:
       from_secret: GITHUB_SSH_KEY
+
+- name: github-release
+  pull: always
+  image: registry.vepay.dev/docker.io/plugins/github-release
+  settings:
+    api_key:
+      from_secret: GITHUB_TOKEN
+    file_exists: skip
+    files: LICENSE
+    note: Bugfixes and improvements
+    title: ${DRONE_TAG}
 
 volumes:
 - name: gradle
@@ -529,6 +541,6 @@ get:
 
 ---
 kind: signature
-hmac: 102467251f09cd4327e52c51e4779f65dab6951bd0a3517691d195a580b8408e
+hmac: d8add2071a23096fced749e4ad67734ac953f68b839c6ff2625943e008cde810
 
 ...
