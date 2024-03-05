@@ -1,0 +1,15 @@
+version = '1.0.0'
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from(components["release"])
+
+                groupId = "com.github.moneytransfersdk"
+                artifactId = "moneytransfersdk"
+                version = "1.0.0"
+            }
+        }
+    }
+}

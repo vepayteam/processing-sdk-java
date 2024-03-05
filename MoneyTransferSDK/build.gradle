@@ -11,7 +11,6 @@ plugins {
 }
 
 group = 'com.github.moneytransfersdk'
-version = '0.0.1'
 
 android {
     namespace 'io.finbridge.vepay.moneytransfersdk'
@@ -103,6 +102,7 @@ dependencies {
     implementation 'io.arrow-kt:arrow-fx-stm:1.2.0'
     implementation 'io.arrow-kt:arrow-fx-coroutines:1.2.0'
 }
+
 
 koverReport {
     // filters for all reports in all variants
@@ -304,3 +304,5 @@ koverReport {
         }
     }
 }
+
+apply from: 'publish.gradle'

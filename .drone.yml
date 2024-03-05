@@ -129,8 +129,7 @@ steps:
   pull: if-not-exists
   image: registry.vepay.dev/library/android-build:33
   commands:
-  - "cat >c0d8caef3498fb3e461ccb8d45f5e463 <<EOF\n// https://developer.android.com/build/publish-library/configure-pub-variants\npublishing {\n    publications {\n        release(MavenPublication) {\n            version 'PR-${DRONE_PULL_REQUEST}.build.${DRONE_BUILD_NUMBER}'\n            afterEvaluate {\n                from components.default\n            }\n        }\n    }\n    repositories {\n        maven {\n            name = \"VepayDev\"\n            url = uri(\"https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven\")\n\n            credentials(HttpHeaderCredentials) {\n                name = \"Authorization\"\n                value = \"token $${GITEA_TOKEN}\"\n            }\n\n            authentication {\n                header(HttpHeaderAuthentication)\n            }\n        }\n    }\n}\nEOF\n"
-  - "echo \"apply from: '../c0d8caef3498fb3e461ccb8d45f5e463'\" >> MoneyTransferSDK/build.gradle"
+  - "cat >MoneyTransferSDK/publish.gradle <<EOF\nversion = 'PR-${DRONE_PULL_REQUEST}.build.${DRONE_BUILD_NUMBER}'\n// https://developer.android.com/build/publish-library/configure-pub-variants\npublishing {\n    publications {\n        release(MavenPublication) {\n            version 'PR-${DRONE_PULL_REQUEST}.build.${DRONE_BUILD_NUMBER}'\n            afterEvaluate {\n                from components.default\n            }\n        }\n    }\n    repositories {\n        maven {\n            name = \"VepayDev\"\n            url = uri(\"https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven\")\n\n            credentials(HttpHeaderCredentials) {\n                name = \"Authorization\"\n                value = \"token $${GITEA_TOKEN}\"\n            }\n\n            authentication {\n                header(HttpHeaderAuthentication)\n            }\n        }\n    }\n}\nEOF\n"
   - sed -ri -e "s,https://jitpack.io,https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven,g" settings.gradle
   - ./gradlew clean -xtest -xlint assemble publishAllPublicationsToVepayDevRepository
   - "for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSsf -H \"Authorization: token $${GITEA_TOKEN}\" --upload-file $$f https://git.vepay.dev/api/packages/${DRONE_REPO_NAMESPACE}/generic/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}/$$(basename $$f); done"
@@ -270,8 +269,7 @@ steps:
   pull: if-not-exists
   image: registry.vepay.dev/library/android-build:33
   commands:
-  - "cat >7520011c4f38d9b4d8515872a240cc71 <<EOF\n// https://developer.android.com/build/publish-library/configure-pub-variants\npublishing {\n    publications {\n        release(MavenPublication) {\n            version '${DRONE_BRANCH}.build.${DRONE_BUILD_NUMBER}'\n            afterEvaluate {\n                from components.default\n            }\n        }\n    }\n    repositories {\n        maven {\n            name = \"VepayDev\"\n            url = uri(\"https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven\")\n\n            credentials(HttpHeaderCredentials) {\n                name = \"Authorization\"\n                value = \"token $${GITEA_TOKEN}\"\n            }\n\n            authentication {\n                header(HttpHeaderAuthentication)\n            }\n        }\n    }\n}\nEOF\n"
-  - "echo \"apply from: '../7520011c4f38d9b4d8515872a240cc71'\" >> MoneyTransferSDK/build.gradle"
+  - "cat >MoneyTransferSDK/publish.gradle <<EOF\nversion = '${DRONE_BRANCH}.build.${DRONE_BUILD_NUMBER}'\n// https://developer.android.com/build/publish-library/configure-pub-variants\npublishing {\n    publications {\n        release(MavenPublication) {\n            version '${DRONE_BRANCH}.build.${DRONE_BUILD_NUMBER}'\n            afterEvaluate {\n                from components.default\n            }\n        }\n    }\n    repositories {\n        maven {\n            name = \"VepayDev\"\n            url = uri(\"https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven\")\n\n            credentials(HttpHeaderCredentials) {\n                name = \"Authorization\"\n                value = \"token $${GITEA_TOKEN}\"\n            }\n\n            authentication {\n                header(HttpHeaderAuthentication)\n            }\n        }\n    }\n}\nEOF\n"
   - sed -ri -e "s,https://jitpack.io,https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven,g" settings.gradle
   - ./gradlew clean -xtest -xlint assemble publishAllPublicationsToVepayDevRepository
   - "for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSsf -H \"Authorization: token $${GITEA_TOKEN}\" --upload-file $$f https://git.vepay.dev/api/packages/${DRONE_REPO_NAMESPACE}/generic/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}/$$(basename $$f); done"
@@ -388,8 +386,7 @@ steps:
   pull: if-not-exists
   image: registry.vepay.dev/library/android-build:33
   commands:
-  - "cat >6db1e3f8bd5b6502f14bfbd4db4176fc <<EOF\n// https://developer.android.com/build/publish-library/configure-pub-variants\npublishing {\n    publications {\n        release(MavenPublication) {\n            version 'production.build.${DRONE_BUILD_NUMBER}'\n            afterEvaluate {\n                from components.default\n            }\n        }\n    }\n    repositories {\n        maven {\n            name = \"VepayDev\"\n            url = uri(\"https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven\")\n\n            credentials(HttpHeaderCredentials) {\n                name = \"Authorization\"\n                value = \"token $${GITEA_TOKEN}\"\n            }\n\n            authentication {\n                header(HttpHeaderAuthentication)\n            }\n        }\n    }\n}\nEOF\n"
-  - "echo \"apply from: '../6db1e3f8bd5b6502f14bfbd4db4176fc'\" >> MoneyTransferSDK/build.gradle"
+  - "cat >MoneyTransferSDK/publish.gradle <<EOF\nversion = 'production.build.${DRONE_BUILD_NUMBER}'\n// https://developer.android.com/build/publish-library/configure-pub-variants\npublishing {\n    publications {\n        release(MavenPublication) {\n            version 'production.build.${DRONE_BUILD_NUMBER}'\n            afterEvaluate {\n                from components.default\n            }\n        }\n    }\n    repositories {\n        maven {\n            name = \"VepayDev\"\n            url = uri(\"https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven\")\n\n            credentials(HttpHeaderCredentials) {\n                name = \"Authorization\"\n                value = \"token $${GITEA_TOKEN}\"\n            }\n\n            authentication {\n                header(HttpHeaderAuthentication)\n            }\n        }\n    }\n}\nEOF\n"
   - sed -ri -e "s,https://jitpack.io,https://git.vepay.dev/api/packages/$${DRONE_REPO_NAMESPACE}/maven,g" settings.gradle
   - ./gradlew clean -xtest -xlint assemble publishAllPublicationsToVepayDevRepository
   - "for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSsf -H \"Authorization: token $${GITEA_TOKEN}\" --upload-file $$f https://git.vepay.dev/api/packages/${DRONE_REPO_NAMESPACE}/generic/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}/$$(basename $$f); done"
@@ -457,6 +454,29 @@ steps:
     note: CHANGELOG.md
     title: ${DRONE_TAG}
 
+- name: push-to-github
+  pull: always
+  image: registry.vepay.dev/docker.io/appleboy/drone-git-push
+  settings:
+    branch: main
+    followtags: true
+    force: true
+    remote: ssh://git@ssh.github.com:443/vepayteam/processing-sdk-java.git
+    ssh_key:
+      from_secret: GITHUB_SSH_KEY
+    tag: ${DRONE_TAG}
+
+- name: github-release
+  pull: always
+  image: registry.vepay.dev/docker.io/plugins/github-release
+  settings:
+    api_key:
+      from_secret: GITHUB_TOKEN
+    file_exists: skip
+    files: LICENSE
+    note: "**Full Changelog**: https://github.com/vepayteam/processing-sdk-java/commits/${DRONE_TAG}"
+    title: ${DRONE_TAG}
+
 image_pull_secrets:
 - dockerconfig
 
@@ -480,27 +500,11 @@ workspace:
   path: /drone/src
 
 steps:
-- name: push-to-github
+- name: empty
   pull: always
-  image: registry.vepay.dev/docker.io/appleboy/drone-git-push
-  settings:
-    branch: main
-    followtags: true
-    force: true
-    remote: ssh://git@ssh.github.com:443/vepayteam/processing-sdk-java.git
-    ssh_key:
-      from_secret: GITHUB_SSH_KEY
-
-- name: github-release
-  pull: always
-  image: registry.vepay.dev/docker.io/plugins/github-release
-  settings:
-    api_key:
-      from_secret: GITHUB_TOKEN
-    file_exists: skip
-    files: LICENSE
-    note: Bugfixes and improvements
-    title: ${DRONE_TAG}
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - echo "Nothing to do."
 
 volumes:
 - name: gradle
@@ -541,6 +545,6 @@ get:
 
 ---
 kind: signature
-hmac: d8add2071a23096fced749e4ad67734ac953f68b839c6ff2625943e008cde810
+hmac: 974d5f91941487cc304f248864d6f37c0fd1f9ce4950e05e1403c8c5c281cfb2
 
 ...
