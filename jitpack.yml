@@ -1,0 +1,2 @@
+before_install:
+  - gradle --build-cache wrapper --gradle-version 7.5 --distribution-type bin
