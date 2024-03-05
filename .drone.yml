@@ -466,17 +466,6 @@ steps:
       from_secret: GITHUB_SSH_KEY
     tag: ${DRONE_TAG}
 
-- name: github-release
-  pull: always
-  image: registry.vepay.dev/docker.io/plugins/github-release
-  settings:
-    api_key:
-      from_secret: GITHUB_TOKEN
-    file_exists: skip
-    files: LICENSE
-    note: "**Full Changelog**: https://github.com/vepayteam/processing-sdk-java/commits/${DRONE_TAG}"
-    title: ${DRONE_TAG}
-
 image_pull_secrets:
 - dockerconfig
 
@@ -536,15 +525,7 @@ get:
   name: github_processing_android_sdk_ssh_key
 
 ---
-kind: secret
-name: GITHUB_TOKEN
-
-get:
-  path: drone-die6s
-  name: github_token
-
----
 kind: signature
-hmac: 974d5f91941487cc304f248864d6f37c0fd1f9ce4950e05e1403c8c5c281cfb2
+hmac: 508a5ad96dad77fc32cdcc72e27bbfb91330800a583c948b6d5c30856f4c9a67
 
 ...
