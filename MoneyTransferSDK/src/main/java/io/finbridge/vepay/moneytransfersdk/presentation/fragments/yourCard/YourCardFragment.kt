@@ -1,6 +1,7 @@
 package io.finbridge.vepay.moneytransfersdk.presentation.fragments.yourCard
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Insets
@@ -15,6 +16,7 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -35,6 +37,8 @@ import io.finbridge.vepay.moneytransfersdk.databinding.FragmentYourCardBinding
 import io.finbridge.vepay.moneytransfersdk.presentation.MoneyTransferActivity.Companion.UUID_KEY
 import io.finbridge.vepay.moneytransfersdk.presentation.MoneyTransferActivity.Companion.XUSER_KEY
 import io.finbridge.vepay.moneytransfersdk.presentation.adapter.CardAdapter
+import io.finbridge.vepay.moneytransfersdk.presentation.fragments.scan.scanner.CardScannerActivityContract
+import io.finbridge.vepay.moneytransfersdk.presentation.fragments.scan.scanner.ScannerType
 import io.finbridge.vepay.moneytransfersdk.presentation.fragments.threeds.ThreeDSFragment
 import kotlinx.coroutines.launch
 import ru.tinkoff.decoro.MaskDescriptor
@@ -85,6 +89,13 @@ class YourCardFragment : Fragment() {
         },
         onClick = { _, _ -> }
     )
+
+    private val getCardDataFromScanner =
+        registerForActivityResult(CardScannerActivityContract()) { scannedCardData: Card? ->
+            if (scannedCardData == null) showErrorScanningToast()
+            else putDataFromCardScanner(scannedCardData)
+        }
+
     private var isEventAutoActivation: Boolean = true
 
     override fun onCreateView(
@@ -101,6 +112,7 @@ class YourCardFragment : Fragment() {
             cardNumberFormatWatcher.installOn(editCardNumber)
             cardDateFormatWatcher.installOn(editCardDate)
             rcCard.adapter = cardAdapter
+            icNfc.isVisible = isNfcEnable()
         }
         initDoAfterTextChanged()
         initOnFocusChangeListeners()
@@ -123,6 +135,12 @@ class YourCardFragment : Fragment() {
                     screenHeight = getScreenHeight(),
                     screenWidth = getScreenWidth(),
                 )
+            }
+            icCamera.setOnClickListener {
+                getCardDataFromScanner.launch(ScannerType.CAMERA)
+            }
+            icNfc.setOnClickListener {
+                if (isNfcEnable()) getCardDataFromScanner.launch(ScannerType.NFC)
             }
         }
     }
@@ -417,6 +435,8 @@ class YourCardFragment : Fragment() {
                 ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.coal24))
             }
         )
+        binding.icNfc.setColorFilter(ContextCompat.getColor(requireContext(), color), PorterDuff.Mode.SRC_IN)
+        binding.icCamera.setColorFilter(ContextCompat.getColor(requireContext(), color), PorterDuff.Mode.SRC_IN)
     }
 
     private fun getPercentage(view: View): Double {
@@ -455,9 +475,22 @@ class YourCardFragment : Fragment() {
         }
     }
 
+    private fun showErrorScanningToast() {
+        context?.let {
+            Toast.makeText(it, R.string.card_pay_fragment_scan_error, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun isNfcEnable(): Boolean {
+        return context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_NFC) == true
+    }
+
+    private fun putDataFromCardScanner(scannedCardData: Card?) {
+        binding.editCardNumber.setText(scannedCardData?.cardNumber)
+        binding.editCardDate.setText(scannedCardData?.expireDate)
+    }
+
     companion object {
-        //private const val XUSER_KEY = "xuser_invoice"
-        //private const val UUID_KEY = "uuid_invoice"
         private const val CARD_NUMBER_MASK = "____ ____ ____ ____"
         private const val CARD_DATE_MASK = "__/__"
         private const val CARD_NUMBER_MAX_LENGTH = 19
