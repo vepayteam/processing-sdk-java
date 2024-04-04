@@ -126,7 +126,7 @@ class YourCardFragment : Fragment() {
         with(binding) {
             btTransferPay.setOnClickListener {
                 with(binding) {
-                    parentLayout.isVisible = false
+                    blur.isVisible = true
                     progressBar.isVisible = true
                 }
                 viewModel.pay(
@@ -176,7 +176,7 @@ class YourCardFragment : Fragment() {
             viewModel.payError.collect {
                 if (it != -1) {
                     with(binding) {
-                        parentLayout.isVisible = true
+                        blur.isVisible = false
                         progressBar.isVisible = false
                     }
                 }
@@ -435,8 +435,14 @@ class YourCardFragment : Fragment() {
                 ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.coal24))
             }
         )
-        binding.icNfc.setColorFilter(ContextCompat.getColor(requireContext(), color), PorterDuff.Mode.SRC_IN)
-        binding.icCamera.setColorFilter(ContextCompat.getColor(requireContext(), color), PorterDuff.Mode.SRC_IN)
+        binding.icNfc.setColorFilter(
+            ContextCompat.getColor(requireContext(), color),
+            PorterDuff.Mode.SRC_IN
+        )
+        binding.icCamera.setColorFilter(
+            ContextCompat.getColor(requireContext(), color),
+            PorterDuff.Mode.SRC_IN
+        )
     }
 
     private fun getPercentage(view: View): Double {
