@@ -44,4 +44,10 @@
     <dimen name="bank_info_height_250dp">250dp</dimen>
     <dimen name="view_height_40dp">40dp</dimen>
 
+    <!--   Progress bar  -->
+    <dimen name="default_stroke_width">7dp</dimen>
+    <dimen name="default_background_stroke_width">3dp</dimen>
+    <dimen name="default_progress_bar_width">48dp</dimen>
+    <dimen name="default_progress_bar_height">48dp</dimen>
+
 </resources>
