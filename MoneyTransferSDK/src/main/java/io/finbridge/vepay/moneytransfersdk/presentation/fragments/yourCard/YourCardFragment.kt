@@ -258,33 +258,37 @@ class YourCardFragment : Fragment() {
 
     private fun initOnFocusChangeListeners() {
         with(binding) {
-            editCardCvv.setOnFocusChangeListener { _, hasFocus ->
-                errorMode(
-                    !hasFocus && !Card.isValidCvv(editCardCvv.text.toString())
-                )
-            }
-            editCardDate.setOnFocusChangeListener { _, hasFocus ->
-                errorMode(
-                    !hasFocus && !Card.isValidDate(editCardDate.text.toString())
-                )
-            }
-            editCardNumber.setOnFocusChangeListener { _, hasFocus ->
-                errorMode(
-                    !hasFocus && !Card.isValidNumber(editCardNumber.text.toString()), true
-                )
-                if (hasFocus || Card.isValidNumber(editCardNumber.text.toString()) || editCardNumber.text.toString()
-                        .isEmpty()
-                ) {
-                    binding.cardError.isVisible = false
+            try {
+                editCardCvv.setOnFocusChangeListener { _, hasFocus ->
+                    errorMode(
+                        !hasFocus && !Card.isValidCvv(editCardCvv.text.toString())
+                    )
                 }
-            }
-            editCardCvv.setOnEditorActionListener { _, actionId, event ->
-                if (event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
-                    val imm =
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(editCardCvv.windowToken, 0)
+                editCardDate.setOnFocusChangeListener { _, hasFocus ->
+                    errorMode(
+                        !hasFocus && !Card.isValidDate(editCardDate.text.toString())
+                    )
                 }
-                false
+                editCardNumber.setOnFocusChangeListener { _, hasFocus ->
+                    errorMode(
+                        !hasFocus && !Card.isValidNumber(editCardNumber.text.toString()), true
+                    )
+                    if (hasFocus || Card.isValidNumber(editCardNumber.text.toString()) || editCardNumber.text.toString()
+                            .isEmpty()
+                    ) {
+                        binding.cardError.isVisible = false
+                    }
+                }
+                editCardCvv.setOnEditorActionListener { _, actionId, event ->
+                    if (event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
+                        val imm =
+                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(editCardCvv.windowToken, 0)
+                    }
+                    false
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
@@ -422,7 +426,12 @@ class YourCardFragment : Fragment() {
         binding.editCardNumber.setTextColor(ContextCompat.getColor(requireContext(), color))
         binding.labelDate.setTextColor(ContextCompat.getColor(requireContext(), color))
         binding.editCardDate.setTextColor(ContextCompat.getColor(requireContext(), color))
-        binding.editCardDate.setHintTextColor(ContextCompat.getColor(requireContext(), colorHint))
+        binding.editCardDate.setHintTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                colorHint
+            )
+        )
         binding.cardNumberBottomGradient.background = if (color == R.color.ice) {
             ContextCompat.getDrawable(requireContext(), R.drawable.white_underline_gradient)
         } else {
