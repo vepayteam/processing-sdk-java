@@ -14,13 +14,6 @@ workspace:
   path: /drone/src
 
 steps:
-- name: git-cleanup-branch
-  pull: if-not-exists
-  image: alpine/git:v2.40.1
-  commands:
-  - git reset --hard origin/${DRONE_TARGET_BRANCH}
-  - git checkout -b ${DRONE_SOURCE_BRANCH} ${DRONE_COMMIT}
-
 - name: check-for-conventional-commits
   pull: if-not-exists
   image: registry.vepay.dev/docker.io/aevea/commitsar:0.20.2
@@ -55,7 +48,7 @@ steps:
     mount:
     - /drone/.gradle/caches
     - /drone/.gradle/notifications
-    path: ${DRONE_REPO}
+    path: ${DRONE_REPO}/${DRONE_BRANCH}
     region: ru-central-1
     root: /drone/build/cache/
     secret_key:
@@ -105,7 +98,7 @@ steps:
     mount:
     - /drone/.gradle/caches
     - /drone/.gradle/notifications
-    path: ${DRONE_REPO}
+    path: ${DRONE_REPO}/${DRONE_BRANCH}
     region: ru-central-1
     root: /drone/build/cache/
     secret_key:
@@ -195,7 +188,7 @@ steps:
     mount:
     - /drone/.gradle/caches
     - /drone/.gradle/notifications
-    path: ${DRONE_REPO}
+    path: ${DRONE_REPO}/${DRONE_BRANCH}
     region: ru-central-1
     root: /drone/build/cache/
     secret_key:
@@ -245,7 +238,7 @@ steps:
     mount:
     - /drone/.gradle/caches
     - /drone/.gradle/notifications
-    path: ${DRONE_REPO}
+    path: ${DRONE_REPO}/${DRONE_BRANCH}
     region: ru-central-1
     root: /drone/build/cache/
     secret_key:
@@ -335,7 +328,7 @@ steps:
     mount:
     - /drone/.gradle/caches
     - /drone/.gradle/notifications
-    path: ${DRONE_REPO}
+    path: ${DRONE_REPO}/${DRONE_BRANCH}
     region: ru-central-1
     root: /drone/build/cache/
     secret_key:
@@ -372,7 +365,7 @@ steps:
     mount:
     - /drone/.gradle/caches
     - /drone/.gradle/notifications
-    path: ${DRONE_REPO}
+    path: ${DRONE_REPO}/${DRONE_BRANCH}
     region: ru-central-1
     root: /drone/build/cache/
     secret_key:
@@ -526,6 +519,6 @@ get:
 
 ---
 kind: signature
-hmac: 508a5ad96dad77fc32cdcc72e27bbfb91330800a583c948b6d5c30856f4c9a67
+hmac: 86915f6a9d722383d518dca0acc6e931567b6da365313187ff103d874716f098
 
 ...

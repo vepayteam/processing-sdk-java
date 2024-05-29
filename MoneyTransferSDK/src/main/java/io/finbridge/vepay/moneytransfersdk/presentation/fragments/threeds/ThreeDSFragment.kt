@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -61,12 +62,14 @@ class ThreeDSFragment : Fragment() {
         binding.webView.settings.javaScriptCanOpenWindowsAutomatically = true
 
         try {
+            binding.progressBar.isVisible = true
             val params = StringBuilder()
                 .append("PaReq=").append(URLEncoder.encode(paReq, "UTF-8"))
                 .append("&TermUrl=").append(URLEncoder.encode(term, "UTF-8"))
                 .append("&MD=").append(URLEncoder.encode(md, "UTF-8"))
                 .toString()
             binding.webView.postUrl(acsUrl, params.toByteArray())
+            binding.progressBar.isVisible = false
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
         }

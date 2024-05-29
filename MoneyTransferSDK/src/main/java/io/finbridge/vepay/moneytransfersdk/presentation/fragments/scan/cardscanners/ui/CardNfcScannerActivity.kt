@@ -57,7 +57,7 @@ class CardNfcScannerActivity : AppCompatActivity() {
                 this,
                 CardNfcScannerActivity::class.java
             ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_MUTABLE
         )
         val tagDetected = IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED)
         val filter = IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED)
