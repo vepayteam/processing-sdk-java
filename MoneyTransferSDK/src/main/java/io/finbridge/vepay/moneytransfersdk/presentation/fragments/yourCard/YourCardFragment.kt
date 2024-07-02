@@ -258,37 +258,37 @@ class YourCardFragment : Fragment() {
 
     private fun initOnFocusChangeListeners() {
         with(binding) {
-            try {
-                editCardCvv.setOnFocusChangeListener { _, hasFocus ->
-                    errorMode(
-                        !hasFocus && !Card.isValidCvv(editCardCvv.text.toString())
-                    )
+            editCardCvv.setOnFocusChangeListener { _, hasFocus ->
+                errorMode(
+                    !hasFocus && !Card.isValidCvv(editCardCvv.text.toString())
+                )
+            }
+            editCardDate.setOnFocusChangeListener { _, hasFocus ->
+                errorMode(
+                    !hasFocus && !Card.isValidDate(editCardDate.text.toString())
+                )
+            }
+            editCardNumber.setOnFocusChangeListener { _, hasFocus ->
+                errorMode(
+                    !hasFocus && !Card.isValidNumber(editCardNumber.text.toString()), true
+                )
+                if (hasFocus || Card.isValidNumber(editCardNumber.text.toString()) || editCardNumber.text.toString()
+                        .isEmpty()
+                ) {
+                    binding.cardError.isVisible = false
                 }
-                editCardDate.setOnFocusChangeListener { _, hasFocus ->
-                    errorMode(
-                        !hasFocus && !Card.isValidDate(editCardDate.text.toString())
-                    )
-                }
-                editCardNumber.setOnFocusChangeListener { _, hasFocus ->
-                    errorMode(
-                        !hasFocus && !Card.isValidNumber(editCardNumber.text.toString()), true
-                    )
-                    if (hasFocus || Card.isValidNumber(editCardNumber.text.toString()) || editCardNumber.text.toString()
-                            .isEmpty()
-                    ) {
-                        binding.cardError.isVisible = false
-                    }
-                }
-                editCardCvv.setOnEditorActionListener { _, actionId, event ->
+            }
+            editCardCvv.setOnEditorActionListener { _, actionId, event ->
+                try {
                     if (event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
                         val imm =
                             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(editCardCvv.windowToken, 0)
                     }
                     false
+                } catch (e: Exception) {
+                    false
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
     }

@@ -457,7 +457,6 @@ steps:
     remote: ssh://git@ssh.github.com:443/vepayteam/processing-sdk-java.git
     ssh_key:
       from_secret: GITHUB_SSH_KEY
-    tag: ${DRONE_TAG}
 
 image_pull_secrets:
 - dockerconfig
@@ -519,6 +518,6 @@ get:
 
 ---
 kind: signature
-hmac: 86915f6a9d722383d518dca0acc6e931567b6da365313187ff103d874716f098
+hmac: 2e670b5434dea66b89dd61a6c2d5a2da6b7a9fea3bb8889d6f24ade69b429dff
 
 ...
