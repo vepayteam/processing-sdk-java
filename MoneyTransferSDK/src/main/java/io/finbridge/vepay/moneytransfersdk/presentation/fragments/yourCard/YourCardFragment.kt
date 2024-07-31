@@ -280,7 +280,7 @@ class YourCardFragment : Fragment() {
             }
             editCardCvv.setOnEditorActionListener { _, actionId, event ->
                 try {
-                    if (event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (event.keyCode != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
                         val imm =
                             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(editCardCvv.windowToken, 0)
