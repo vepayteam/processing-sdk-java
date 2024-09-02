@@ -33,6 +33,7 @@ class InvoicePaymentUseCase @Inject constructor(
     suspend fun pay(
         id: String,
         xUser: String,
+        baseUrl: String,
         card: Card,
         screenHeight: Int,
         screenWidth: Int,
@@ -41,6 +42,7 @@ class InvoicePaymentUseCase @Inject constructor(
             paymentRepository.createPayment(
                 id = id,
                 xUser = xUser,
+                baseUrl = baseUrl,
                 paymentRequest = getPaymentRequest(
                     card = card,
                     screenHeight = screenHeight,

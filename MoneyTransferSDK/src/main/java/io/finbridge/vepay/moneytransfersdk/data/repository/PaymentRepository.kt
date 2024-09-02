@@ -7,7 +7,9 @@ import javax.inject.Inject
 
 interface PaymentRepository {
     suspend fun createPayment(
-        id: String, xUser: String,
+        id: String,
+        xUser: String,
+        baseUrl: String,
         paymentRequest: PaymentRequest
     ): Response<PaymentResponse>
 }
@@ -18,8 +20,9 @@ class PaymentRepositoryImpl @Inject constructor(
     override suspend fun createPayment(
         id: String,
         xUser: String,
+        baseUrl: String,
         paymentRequest: PaymentRequest,
     ): Response<PaymentResponse> {
-        return createPaymentApi.execute(id, xUser, paymentRequest)
+        return createPaymentApi.execute(id, xUser, baseUrl, paymentRequest)
     }
 }
