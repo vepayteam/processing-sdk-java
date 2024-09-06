@@ -17,7 +17,7 @@ internal class CreatePaymentApiTest {
     fun execute() {
         runBlocking {
             val expectResponse = DataMocks.paymentResponse
-            val actualResponse = getCreatePaymentApiTest.execute("id","123", DataMocks.paymentRequest)
+            val actualResponse = getCreatePaymentApiTest.execute("id","123", "baseUrl", DataMocks.paymentRequest)
 
             Assert.assertTrue(expectResponse == (actualResponse as Response.Success).result)
         }
