@@ -20,7 +20,8 @@ class MainActivity : AppCompatActivity() {
 
         initMoneyTransfer.launch(InputParams(
             uuid = "df44ef10-3694-4438-9178-df3dcbb92ce9",
-            xUser = "376"
+            xUser = "376",
+            baseUrl = "https://test.vepay.online/h2hapi/v1"
         ))
     }
 }

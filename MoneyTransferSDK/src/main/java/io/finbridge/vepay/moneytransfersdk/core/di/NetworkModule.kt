@@ -67,7 +67,6 @@ class NetworkModule {
             defaultRequest {
                 url {
                     protocol = URLProtocol.HTTPS
-                    host = BASE_URL
                 }
                 header("Accept", "application/json")
                 header("Content-Type", "application/json")
@@ -86,7 +85,6 @@ class NetworkModule {
         paymentRepository
 
     companion object {
-        private const val BASE_URL = "test.vepay.online/h2hapi/v1"
         private const val TAG_KTOR_LOGGER = "ktor_logger:"
     }
 }

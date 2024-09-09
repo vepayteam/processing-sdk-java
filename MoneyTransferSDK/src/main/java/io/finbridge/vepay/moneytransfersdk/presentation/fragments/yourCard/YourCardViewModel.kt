@@ -210,6 +210,7 @@ class YourCardViewModel @Inject constructor(
     fun pay(
         id: String,
         xUser: String,
+        baseUrl: String,
         screenHeight: Int,
         screenWidth: Int,
     ) {
@@ -217,6 +218,7 @@ class YourCardViewModel @Inject constructor(
             invoicePaymentUseCase.pay(
                 id = id,
                 xUser = xUser,
+                baseUrl = baseUrl,
                 card = cardModel.value.first().card,
                 screenHeight = screenHeight,
                 screenWidth = screenWidth

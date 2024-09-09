@@ -34,6 +34,7 @@ import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardBank
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardType
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardUi
 import io.finbridge.vepay.moneytransfersdk.databinding.FragmentYourCardBinding
+import io.finbridge.vepay.moneytransfersdk.presentation.MoneyTransferActivity.Companion.BASE_URL_KEY
 import io.finbridge.vepay.moneytransfersdk.presentation.MoneyTransferActivity.Companion.UUID_KEY
 import io.finbridge.vepay.moneytransfersdk.presentation.MoneyTransferActivity.Companion.XUSER_KEY
 import io.finbridge.vepay.moneytransfersdk.presentation.adapter.CardAdapter
@@ -54,6 +55,8 @@ class YourCardFragment : Fragment() {
         get() = requireArguments().getString(UUID_KEY) ?: emptyString()
     private val xUser: String
         get() = requireArguments().getString(XUSER_KEY) ?: emptyString()
+    private val baseUrl: String
+        get() = requireArguments().getString(BASE_URL_KEY) ?: emptyString()
     private val cardNumberFormatWatcher by lazy {
         val descriptor = MaskDescriptor.ofRawMask(CARD_NUMBER_MASK).setTerminated(true)
             .setForbidInputWhenFilled(true)
@@ -132,6 +135,7 @@ class YourCardFragment : Fragment() {
                 viewModel.pay(
                     id = invoiceUuid,
                     xUser = xUser,
+                    baseUrl = baseUrl,
                     screenHeight = getScreenHeight(),
                     screenWidth = getScreenWidth(),
                 )
@@ -512,11 +516,13 @@ class YourCardFragment : Fragment() {
         private const val CVV_MAX_LENGTH = 3
 
         @JvmStatic
-        fun newInstance(invoiceUuid: String, xUser: String) = YourCardFragment().apply {
-            arguments = bundleOf(
-                UUID_KEY to invoiceUuid,
-                XUSER_KEY to xUser,
-            )
-        }
+        fun newInstance(invoiceUuid: String, xUser: String, baseURl: String) =
+            YourCardFragment().apply {
+                arguments = bundleOf(
+                    UUID_KEY to invoiceUuid,
+                    XUSER_KEY to xUser,
+                    BASE_URL_KEY to baseURl,
+                )
+            }
     }
 }
