@@ -113,6 +113,9 @@ steps:
   settings:
     sonar_host: https://sonarqube.vepay.dev
     sonar_loglevel: INFO
+    sonar_project_settings: sonar-project.properties
+    sonar_quality_gate_timeout: 600
+    sonar_quality_gate_wait: true
     sonar_reference_branch: ${DRONE_TARGET_BRANCH}
   environment:
     SONAR_TOKEN:
@@ -253,6 +256,9 @@ steps:
   settings:
     sonar_host: https://sonarqube.vepay.dev
     sonar_loglevel: INFO
+    sonar_project_settings: sonar-project.properties
+    sonar_quality_gate_timeout: 600
+    sonar_quality_gate_wait: true
     sonar_reference_branch: ${DRONE_TARGET_BRANCH}
   environment:
     SONAR_TOKEN:
@@ -518,6 +524,6 @@ get:
 
 ---
 kind: signature
-hmac: 2e670b5434dea66b89dd61a6c2d5a2da6b7a9fea3bb8889d6f24ade69b429dff
+hmac: 53109ee0e607c4e25eb0e775cb67a70c378abdac15c9cc0e1cdc53103c950e1b
 
 ...
