@@ -264,17 +264,28 @@ class YourCardFragment : Fragment() {
         with(binding) {
             editCardCvv.setOnFocusChangeListener { _, hasFocus ->
                 errorMode(
-                    !hasFocus && !Card.isValidCvv(editCardCvv.text.toString())
+                    (!hasFocus && !Card.isValidCvv(editCardCvv.text.toString()))
+                            || !Card.isValidDate(
+                        editCardDate.text.toString(),
+                        CardType.getType(editCardNumber.text.toString())
+                    )
+                            || !Card.isValidNumber(editCardNumber.text.toString()),
+                    true
                 )
             }
             editCardDate.setOnFocusChangeListener { _, hasFocus ->
                 errorMode(
-                    !hasFocus && !Card.isValidDate(editCardDate.text.toString())
+                    (!hasFocus && !Card.isValidDate(
+                        editCardDate.text.toString(),
+                        CardType.getType(editCardNumber.text.toString())
+                    ))
+                            || !btTransferPay.isEnabled
                 )
             }
             editCardNumber.setOnFocusChangeListener { _, hasFocus ->
                 errorMode(
-                    !hasFocus && !Card.isValidNumber(editCardNumber.text.toString()), true
+                    (!hasFocus && !Card.isValidNumber(editCardNumber.text.toString())), true
+                            || !btTransferPay.isEnabled
                 )
                 if (hasFocus || Card.isValidNumber(editCardNumber.text.toString()) || editCardNumber.text.toString()
                         .isEmpty()
@@ -288,6 +299,7 @@ class YourCardFragment : Fragment() {
                         val imm =
                             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(editCardCvv.windowToken, 0)
+                        binding.editCardCvv.clearFocus()
                     }
                     false
                 } catch (e: Exception) {
@@ -318,10 +330,17 @@ class YourCardFragment : Fragment() {
             editCardDate.doAfterTextChanged { editableText ->
                 activationButton()
                 val cardExp = editableText.toString()
-                if (Card.isValidDate(cardExp) || editCardDate.hasFocus() || editableText?.isEmpty() == true) {
+                if (Card.isValidDate(
+                        cardExp,
+                        CardType.getType(editCardNumber.text.toString())
+                    ) || editCardDate.hasFocus() || editableText?.isEmpty() == true
+                ) {
                     errorMode(false) {
                         viewModel.findCard { card ->
-                            if (Card.isValidNumber(editCardNumber.text.toString()) && Card.isValidCvv(
+                            if (Card.isValidDate(
+                                    cardExp,
+                                    CardType.getType(editCardNumber.text.toString())
+                                ) && Card.isValidCvv(
                                     binding.editCardCvv.text.toString()
                                 )
                             ) {
@@ -330,7 +349,7 @@ class YourCardFragment : Fragment() {
                             }
                         }
                     }
-                    viewModel.editDate(cardExp)
+                    viewModel.editDate(cardExp, editCardNumber.text.toString())
                 } else {
                     errorMode(true)
                 }
@@ -343,7 +362,10 @@ class YourCardFragment : Fragment() {
                     errorMode(false) {
                         viewModel.findCard { card ->
                             if (Card.isValidNumber(editCardNumber.text.toString())
-                                && Card.isValidDate(editCardDate.text.toString())
+                                && Card.isValidDate(
+                                    editCardDate.text.toString(),
+                                    CardType.getType(editCardNumber.text.toString())
+                                )
                             ) {
                                 binding.cardError.isVisible = false
                                 correctCardState(card)
@@ -364,7 +386,10 @@ class YourCardFragment : Fragment() {
         with(binding) {
             btTransferPay.isEnabled =
                 Card.isValidNumber(editCardNumber.text.toString())
-                        && Card.isValidDate(editCardDate.text.toString())
+                        && Card.isValidDate(
+                    editCardDate.text.toString(),
+                    CardType.getType(editCardNumber.text.toString())
+                )
                         && Card.isValidCvv(editCardCvv.text.toString())
         }
     }
