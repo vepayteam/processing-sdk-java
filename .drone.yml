@@ -42,12 +42,10 @@ steps:
       from_secret: CACHE_ACCESS_KEY_ID
     endpoint: https://s3.vepay.dev
     fallback_path: ${DRONE_REPO}
+    filename: archive.tar
     flush_age: 90
-    flush_path: ${DRONE_REPO}
+    flush_path: ${DRONE_REPO}/${DRONE_BRANCH}
     mode: restore
-    mount:
-    - /drone/.gradle/caches
-    - /drone/.gradle/notifications
     path: ${DRONE_REPO}/${DRONE_BRANCH}
     region: ru-central-1
     root: /drone/build/cache/
@@ -55,7 +53,7 @@ steps:
       from_secret: CACHE_SECRET_ACCESS_KEY
   volumes:
   - name: gradle
-    path: /drone/.gradle
+    path: /drone/src/drone/.gradle
 
 - name: gradle-cache-prepare
   pull: if-not-exists
@@ -92,8 +90,9 @@ steps:
       from_secret: CACHE_ACCESS_KEY_ID
     endpoint: https://s3.vepay.dev
     fallback_path: ${DRONE_REPO}
+    filename: archive.tar
     flush_age: 90
-    flush_path: ${DRONE_REPO}
+    flush_path: ${DRONE_REPO}/${DRONE_BRANCH}
     mode: rebuild
     mount:
     - /drone/.gradle/caches
@@ -138,6 +137,28 @@ steps:
   volumes:
   - name: gradle
     path: /drone/.gradle
+
+- name: browserstack-app-automate
+  pull: always
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSs -X POST "https://api-cloud.browserstack.com/app-automate/upload" -u "$$BROWSERSTACK_USERNAME:$$BROWSERSTACK_ACCESS_KEY" -F "file=@$$f" -F "custom_id=${DRONE_REPO_NAME}.build.${DRONE_BUILD_NUMBER}-$$(basename $$f)"; done
+  environment:
+    BROWSERSTACK_ACCESS_KEY:
+      from_secret: BROWSERSTACK_ACCESS_KEY
+    BROWSERSTACK_USERNAME:
+      from_secret: BROWSERSTACK_USERNAME
+
+- name: browserstack-app-live
+  pull: always
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSs -X POST "https://api-cloud.browserstack.com/app-live/upload" -u "$$BROWSERSTACK_LIVE_USERNAME:$$BROWSERSTACK_LIVE_ACCESS_KEY" -F "file=@$$f" -F "custom_id=${DRONE_REPO_NAME}.build.${DRONE_BUILD_NUMBER}-$$(basename $$f)"; done
+  environment:
+    BROWSERSTACK_LIVE_ACCESS_KEY:
+      from_secret: BROWSERSTACK_LIVE_ACCESS_KEY
+    BROWSERSTACK_LIVE_USERNAME:
+      from_secret: BROWSERSTACK_LIVE_USERNAME
 
 - name: notify-debug-apk-url-08c9a46106afff54c9bbc81e0e974a76
   pull: always
@@ -185,12 +206,10 @@ steps:
       from_secret: CACHE_ACCESS_KEY_ID
     endpoint: https://s3.vepay.dev
     fallback_path: ${DRONE_REPO}
+    filename: archive.tar
     flush_age: 90
-    flush_path: ${DRONE_REPO}
+    flush_path: ${DRONE_REPO}/${DRONE_BRANCH}
     mode: restore
-    mount:
-    - /drone/.gradle/caches
-    - /drone/.gradle/notifications
     path: ${DRONE_REPO}/${DRONE_BRANCH}
     region: ru-central-1
     root: /drone/build/cache/
@@ -198,7 +217,7 @@ steps:
       from_secret: CACHE_SECRET_ACCESS_KEY
   volumes:
   - name: gradle
-    path: /drone/.gradle
+    path: /drone/src/drone/.gradle
 
 - name: gradle-cache-prepare
   pull: if-not-exists
@@ -235,8 +254,9 @@ steps:
       from_secret: CACHE_ACCESS_KEY_ID
     endpoint: https://s3.vepay.dev
     fallback_path: ${DRONE_REPO}
+    filename: archive.tar
     flush_age: 90
-    flush_path: ${DRONE_REPO}
+    flush_path: ${DRONE_REPO}/${DRONE_BRANCH}
     mode: rebuild
     mount:
     - /drone/.gradle/caches
@@ -281,6 +301,28 @@ steps:
   volumes:
   - name: gradle
     path: /drone/.gradle
+
+- name: browserstack-app-automate
+  pull: always
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSs -X POST "https://api-cloud.browserstack.com/app-automate/upload" -u "$$BROWSERSTACK_USERNAME:$$BROWSERSTACK_ACCESS_KEY" -F "file=@$$f" -F "custom_id=${DRONE_REPO_NAME}.build.${DRONE_BUILD_NUMBER}-$$(basename $$f)"; done
+  environment:
+    BROWSERSTACK_ACCESS_KEY:
+      from_secret: BROWSERSTACK_ACCESS_KEY
+    BROWSERSTACK_USERNAME:
+      from_secret: BROWSERSTACK_USERNAME
+
+- name: browserstack-app-live
+  pull: always
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSs -X POST "https://api-cloud.browserstack.com/app-live/upload" -u "$$BROWSERSTACK_LIVE_USERNAME:$$BROWSERSTACK_LIVE_ACCESS_KEY" -F "file=@$$f" -F "custom_id=${DRONE_REPO_NAME}.build.${DRONE_BUILD_NUMBER}-$$(basename $$f)"; done
+  environment:
+    BROWSERSTACK_LIVE_ACCESS_KEY:
+      from_secret: BROWSERSTACK_LIVE_ACCESS_KEY
+    BROWSERSTACK_LIVE_USERNAME:
+      from_secret: BROWSERSTACK_LIVE_USERNAME
 
 - name: notify-debug-apk-url-08c9a46106afff54c9bbc81e0e974a76
   pull: always
@@ -328,12 +370,10 @@ steps:
       from_secret: CACHE_ACCESS_KEY_ID
     endpoint: https://s3.vepay.dev
     fallback_path: ${DRONE_REPO}
+    filename: archive.tar
     flush_age: 90
-    flush_path: ${DRONE_REPO}
+    flush_path: ${DRONE_REPO}/${DRONE_BRANCH}
     mode: restore
-    mount:
-    - /drone/.gradle/caches
-    - /drone/.gradle/notifications
     path: ${DRONE_REPO}/${DRONE_BRANCH}
     region: ru-central-1
     root: /drone/build/cache/
@@ -341,7 +381,7 @@ steps:
       from_secret: CACHE_SECRET_ACCESS_KEY
   volumes:
   - name: gradle
-    path: /drone/.gradle
+    path: /drone/src/drone/.gradle
 
 - name: gradle-cache-prepare
   pull: if-not-exists
@@ -365,8 +405,9 @@ steps:
       from_secret: CACHE_ACCESS_KEY_ID
     endpoint: https://s3.vepay.dev
     fallback_path: ${DRONE_REPO}
+    filename: archive.tar
     flush_age: 90
-    flush_path: ${DRONE_REPO}
+    flush_path: ${DRONE_REPO}/${DRONE_BRANCH}
     mode: rebuild
     mount:
     - /drone/.gradle/caches
@@ -398,6 +439,28 @@ steps:
   volumes:
   - name: gradle
     path: /drone/.gradle
+
+- name: browserstack-app-automate
+  pull: always
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSs -X POST "https://api-cloud.browserstack.com/app-automate/upload" -u "$$BROWSERSTACK_USERNAME:$$BROWSERSTACK_ACCESS_KEY" -F "file=@$$f" -F "custom_id=${DRONE_REPO_NAME}.build.${DRONE_BUILD_NUMBER}-$$(basename $$f)"; done
+  environment:
+    BROWSERSTACK_ACCESS_KEY:
+      from_secret: BROWSERSTACK_ACCESS_KEY
+    BROWSERSTACK_USERNAME:
+      from_secret: BROWSERSTACK_USERNAME
+
+- name: browserstack-app-live
+  pull: always
+  image: registry.vepay.dev/ci/tools
+  commands:
+  - for f in $$(find . -name '*.apk' -type f | grep outputs); do curl -LSs -X POST "https://api-cloud.browserstack.com/app-live/upload" -u "$$BROWSERSTACK_LIVE_USERNAME:$$BROWSERSTACK_LIVE_ACCESS_KEY" -F "file=@$$f" -F "custom_id=${DRONE_REPO_NAME}.build.${DRONE_BUILD_NUMBER}-$$(basename $$f)"; done
+  environment:
+    BROWSERSTACK_LIVE_ACCESS_KEY:
+      from_secret: BROWSERSTACK_LIVE_ACCESS_KEY
+    BROWSERSTACK_LIVE_USERNAME:
+      from_secret: BROWSERSTACK_LIVE_USERNAME
 
 - name: notify-debug-apk-url-08c9a46106afff54c9bbc81e0e974a76
   pull: always
@@ -524,6 +587,6 @@ get:
 
 ---
 kind: signature
-hmac: 53109ee0e607c4e25eb0e775cb67a70c378abdac15c9cc0e1cdc53103c950e1b
+hmac: 123edbcf90db53ebfbec2c431cee4229318626494cb3c9db228b74c7ccbf77e2
 
 ...
