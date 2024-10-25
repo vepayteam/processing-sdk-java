@@ -2,10 +2,9 @@ package io.finbridge.vepay.moneytransfersdk.data.models.ui.card
 
 import android.os.Build
 import android.os.Parcelable
-import android.text.TextUtils
+import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
 import java.util.Calendar
-import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Card(
@@ -20,30 +19,20 @@ data class Card(
                 false
             } else {
                 val number = prepareCardNumber(cardNumber)
-                return if (TextUtils.isEmpty(number) || number.length < 14) {
+                if (number.isEmpty() || number.length < 14 || number.length > 19) {
                     false
                 } else {
                     var sum = 0
-                    if (number.length % 2 == 0) {
-                        for (i in number.indices step 2) {
-                            var c = number.substring(i, i + 1).toInt()
-                            c *= 2
-                            if (c > 9) {
-                                c -= 9
+                    val length = number.length
+                    for (i in 0 until length) {
+                        var digit = number[length - 1 - i].toString().toInt()
+                        if (i % 2 == 1) {
+                            digit *= 2
+                            if (digit > 9) {
+                                digit -= 9
                             }
-                            sum += c
-                            sum += number.substring(i + 1, i + 2).toInt()
                         }
-                    } else {
-                        for (i in 1 until number.length step 2) {
-                            var c: Int = number.substring(i, i + 1).toInt()
-                            c *= 2
-                            if (c > 9) {
-                                c -= 9
-                            }
-                            sum += c
-                            sum += number.substring(i - 1, i).toInt()
-                        }
+                        sum += digit
                     }
                     sum % 10 == 0
                 }

@@ -313,11 +313,11 @@ class YourCardFragment : Fragment() {
         with(binding) {
             editCardNumber.doAfterTextChanged { editableText ->
                 activationButton()
-                val cardNumber = editableText.toString()
+                val cardNumber = editableText.toString().trim()
                 if (Card.isValidNumber(cardNumber) || editCardNumber.hasFocus() || editableText?.isEmpty() == true) {
                     errorMode(false)
                     binding.cardError.isVisible = false
-                    if (cardNumber.length == CARD_NUMBER_MAX_LENGTH)
+                    if (cardNumber.length == CARD_NUMBER_MAX_LENGTH || cardNumber.length == CARD_NUMBER_BASE_LENGTH)
                         viewModel.editCardNumber(cardNumber)
                 } else {
                     errorMode(
@@ -535,9 +535,10 @@ class YourCardFragment : Fragment() {
     }
 
     companion object {
-        private const val CARD_NUMBER_MASK = "____ ____ ____ ____"
+        private const val CARD_NUMBER_MASK = "____ ____ ____ ____ ___"
         private const val CARD_DATE_MASK = "__/__"
-        private const val CARD_NUMBER_MAX_LENGTH = 19
+        private const val CARD_NUMBER_MAX_LENGTH = 23
+        private const val CARD_NUMBER_BASE_LENGTH = 19
         private const val CVV_MAX_LENGTH = 3
 
         @JvmStatic
