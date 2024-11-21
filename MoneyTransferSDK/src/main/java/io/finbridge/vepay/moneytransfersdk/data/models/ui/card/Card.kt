@@ -64,12 +64,12 @@ data class Card(
                         true
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            month >= LocalDate.now().monthValue && year + 2000 >= LocalDate.now().year
+                            year + 2000 > LocalDate.now().year || (month >= LocalDate.now().monthValue && year + 2000 == LocalDate.now().year)
                         } else {
                             val calendar: Calendar = Calendar.getInstance()
                             val currentMonth: Int = calendar.get(Calendar.MONTH) + 1
                             val currentYear = calendar[Calendar.YEAR]
-                            return month >= currentMonth && year + 2000 >= currentYear
+                            return year + 2000 > currentYear || (month >= currentMonth && year + 2000 == currentYear)
                         }
                     }
                 }
