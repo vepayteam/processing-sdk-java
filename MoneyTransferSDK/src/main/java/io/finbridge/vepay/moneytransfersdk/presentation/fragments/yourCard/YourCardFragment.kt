@@ -34,6 +34,7 @@ import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardBank
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardType
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardUi
 import io.finbridge.vepay.moneytransfersdk.databinding.FragmentYourCardBinding
+import io.finbridge.vepay.moneytransfersdk.presentation.MoneyTransferActivity.Companion.BASE_URL_KEY
 import io.finbridge.vepay.moneytransfersdk.presentation.MoneyTransferActivity.Companion.UUID_KEY
 import io.finbridge.vepay.moneytransfersdk.presentation.MoneyTransferActivity.Companion.XUSER_KEY
 import io.finbridge.vepay.moneytransfersdk.presentation.adapter.CardAdapter
@@ -54,6 +55,8 @@ class YourCardFragment : Fragment() {
         get() = requireArguments().getString(UUID_KEY) ?: emptyString()
     private val xUser: String
         get() = requireArguments().getString(XUSER_KEY) ?: emptyString()
+    private val baseUrl: String
+        get() = requireArguments().getString(BASE_URL_KEY) ?: emptyString()
     private val cardNumberFormatWatcher by lazy {
         val descriptor = MaskDescriptor.ofRawMask(CARD_NUMBER_MASK).setTerminated(true)
             .setForbidInputWhenFilled(true)
@@ -132,6 +135,7 @@ class YourCardFragment : Fragment() {
                 viewModel.pay(
                     id = invoiceUuid,
                     xUser = xUser,
+                    baseUrl = baseUrl,
                     screenHeight = getScreenHeight(),
                     screenWidth = getScreenWidth(),
                 )
@@ -260,17 +264,28 @@ class YourCardFragment : Fragment() {
         with(binding) {
             editCardCvv.setOnFocusChangeListener { _, hasFocus ->
                 errorMode(
-                    !hasFocus && !Card.isValidCvv(editCardCvv.text.toString())
+                    (!hasFocus && !Card.isValidCvv(editCardCvv.text.toString()))
+                            || !Card.isValidDate(
+                        editCardDate.text.toString(),
+                        CardType.getType(editCardNumber.text.toString())
+                    )
+                            || !Card.isValidNumber(editCardNumber.text.toString()),
+                    true
                 )
             }
             editCardDate.setOnFocusChangeListener { _, hasFocus ->
                 errorMode(
-                    !hasFocus && !Card.isValidDate(editCardDate.text.toString())
+                    (!hasFocus && !Card.isValidDate(
+                        editCardDate.text.toString(),
+                        CardType.getType(editCardNumber.text.toString())
+                    ))
+                            || !btTransferPay.isEnabled
                 )
             }
             editCardNumber.setOnFocusChangeListener { _, hasFocus ->
                 errorMode(
-                    !hasFocus && !Card.isValidNumber(editCardNumber.text.toString()), true
+                    (!hasFocus && !Card.isValidNumber(editCardNumber.text.toString())), true
+                            || !btTransferPay.isEnabled
                 )
                 if (hasFocus || Card.isValidNumber(editCardNumber.text.toString()) || editCardNumber.text.toString()
                         .isEmpty()
@@ -280,10 +295,11 @@ class YourCardFragment : Fragment() {
             }
             editCardCvv.setOnEditorActionListener { _, actionId, event ->
                 try {
-                    if (event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (event.keyCode != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
                         val imm =
                             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(editCardCvv.windowToken, 0)
+                        binding.editCardCvv.clearFocus()
                     }
                     false
                 } catch (e: Exception) {
@@ -297,11 +313,11 @@ class YourCardFragment : Fragment() {
         with(binding) {
             editCardNumber.doAfterTextChanged { editableText ->
                 activationButton()
-                val cardNumber = editableText.toString()
+                val cardNumber = editableText.toString().trim()
                 if (Card.isValidNumber(cardNumber) || editCardNumber.hasFocus() || editableText?.isEmpty() == true) {
                     errorMode(false)
                     binding.cardError.isVisible = false
-                    if (cardNumber.length == CARD_NUMBER_MAX_LENGTH)
+                    if (cardNumber.length == CARD_NUMBER_MAX_LENGTH || cardNumber.length == CARD_NUMBER_BASE_LENGTH)
                         viewModel.editCardNumber(cardNumber)
                 } else {
                     errorMode(
@@ -314,10 +330,17 @@ class YourCardFragment : Fragment() {
             editCardDate.doAfterTextChanged { editableText ->
                 activationButton()
                 val cardExp = editableText.toString()
-                if (Card.isValidDate(cardExp) || editCardDate.hasFocus() || editableText?.isEmpty() == true) {
+                if (Card.isValidDate(
+                        cardExp,
+                        CardType.getType(editCardNumber.text.toString())
+                    ) || editCardDate.hasFocus() || editableText?.isEmpty() == true
+                ) {
                     errorMode(false) {
                         viewModel.findCard { card ->
-                            if (Card.isValidNumber(editCardNumber.text.toString()) && Card.isValidCvv(
+                            if (Card.isValidDate(
+                                    cardExp,
+                                    CardType.getType(editCardNumber.text.toString())
+                                ) && Card.isValidCvv(
                                     binding.editCardCvv.text.toString()
                                 )
                             ) {
@@ -326,7 +349,7 @@ class YourCardFragment : Fragment() {
                             }
                         }
                     }
-                    viewModel.editDate(cardExp)
+                    viewModel.editDate(cardExp, editCardNumber.text.toString())
                 } else {
                     errorMode(true)
                 }
@@ -339,7 +362,10 @@ class YourCardFragment : Fragment() {
                     errorMode(false) {
                         viewModel.findCard { card ->
                             if (Card.isValidNumber(editCardNumber.text.toString())
-                                && Card.isValidDate(editCardDate.text.toString())
+                                && Card.isValidDate(
+                                    editCardDate.text.toString(),
+                                    CardType.getType(editCardNumber.text.toString())
+                                )
                             ) {
                                 binding.cardError.isVisible = false
                                 correctCardState(card)
@@ -360,7 +386,10 @@ class YourCardFragment : Fragment() {
         with(binding) {
             btTransferPay.isEnabled =
                 Card.isValidNumber(editCardNumber.text.toString())
-                        && Card.isValidDate(editCardDate.text.toString())
+                        && Card.isValidDate(
+                    editCardDate.text.toString(),
+                    CardType.getType(editCardNumber.text.toString())
+                )
                         && Card.isValidCvv(editCardCvv.text.toString())
         }
     }
@@ -506,17 +535,20 @@ class YourCardFragment : Fragment() {
     }
 
     companion object {
-        private const val CARD_NUMBER_MASK = "____ ____ ____ ____"
+        private const val CARD_NUMBER_MASK = "____ ____ ____ ____ ___"
         private const val CARD_DATE_MASK = "__/__"
-        private const val CARD_NUMBER_MAX_LENGTH = 19
+        private const val CARD_NUMBER_MAX_LENGTH = 23
+        private const val CARD_NUMBER_BASE_LENGTH = 19
         private const val CVV_MAX_LENGTH = 3
 
         @JvmStatic
-        fun newInstance(invoiceUuid: String, xUser: String) = YourCardFragment().apply {
-            arguments = bundleOf(
-                UUID_KEY to invoiceUuid,
-                XUSER_KEY to xUser,
-            )
-        }
+        fun newInstance(invoiceUuid: String, xUser: String, baseURl: String) =
+            YourCardFragment().apply {
+                arguments = bundleOf(
+                    UUID_KEY to invoiceUuid,
+                    XUSER_KEY to xUser,
+                    BASE_URL_KEY to baseURl,
+                )
+            }
     }
 }

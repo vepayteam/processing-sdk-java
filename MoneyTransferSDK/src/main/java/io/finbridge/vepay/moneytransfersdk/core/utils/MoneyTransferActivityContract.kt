@@ -14,6 +14,7 @@ class MoneyTransferActivityContract() : ActivityResultContract<InputParams, Tran
         val moneyTransferIntent = Intent(context, MoneyTransferActivity::class.java)
         moneyTransferIntent.putExtra(MoneyTransferActivity.UUID_KEY, input.uuid)
         moneyTransferIntent.putExtra(MoneyTransferActivity.XUSER_KEY, input.xUser)
+        moneyTransferIntent.putExtra(MoneyTransferActivity.BASE_URL_KEY, input.baseUrl)
         return moneyTransferIntent
     }
 

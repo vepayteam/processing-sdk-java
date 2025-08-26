@@ -8,6 +8,7 @@ import io.finbridge.vepay.moneytransfersdk.R
 import io.finbridge.vepay.moneytransfersdk.core.utils.extentions.ResourceProvider
 import io.finbridge.vepay.moneytransfersdk.data.models.network.AcsRedirect
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.Card
+import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardType
 import io.finbridge.vepay.moneytransfersdk.data.models.ui.card.CardUi
 import io.finbridge.vepay.moneytransfersdk.data.usecase.InvoicePaymentUseCase
 import javax.inject.Inject
@@ -85,7 +86,7 @@ class YourCardViewModel @Inject constructor(
         }
     }
 
-    fun editDate(date: String) {
+    fun editDate(date: String, cardNumber: String) {
         viewModelScope.launch {
             var stationItems = mutableListOf<CardUi>()
             _cardModel.value.forEach {
@@ -101,7 +102,7 @@ class YourCardViewModel @Inject constructor(
                     this[index] = updatedItem
                 }
             }
-            if (Card.isValidDate(date)) _cardModel.emit(stationItems)
+            if (Card.isValidDate(date, CardType.getType(cardNumber))) _cardModel.emit(stationItems)
         }
     }
 
@@ -210,6 +211,7 @@ class YourCardViewModel @Inject constructor(
     fun pay(
         id: String,
         xUser: String,
+        baseUrl: String,
         screenHeight: Int,
         screenWidth: Int,
     ) {
@@ -217,6 +219,7 @@ class YourCardViewModel @Inject constructor(
             invoicePaymentUseCase.pay(
                 id = id,
                 xUser = xUser,
+                baseUrl = baseUrl,
                 card = cardModel.value.first().card,
                 screenHeight = screenHeight,
                 screenWidth = screenWidth

@@ -31,6 +31,7 @@ implementation 'io.finbridge.vepay.*:$latestVersion'
 
 * UUID оплаты
 * X-user id-пользователя в системе оплаты
+* Base url платёжной системы Vepay(тестовый URL - "https://test.vepay.online/h2hapi/v1")
 
 ### Пример работы
 
@@ -40,6 +41,7 @@ API (https://developer.android.com/training/basics/intents/result).
 
 * UUID платежа формата String.
 * X-user id-пользователя формата String
+* Base url платёжной системы Vepay
 
 Выходным параметром является TransferStatus(Enum класс со следующим наполением:
 

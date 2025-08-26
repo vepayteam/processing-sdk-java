@@ -15,9 +15,12 @@ class PaymentRepositoryImplTest {
     fun createPayment() = runBlocking {
         val id = "id"
         val xUser = "xUser"
+        val baseUrl = "baseUrl"
         val request = DataMocks.paymentRequest
 
-        repository.createPayment(id, xUser, request)
-        coVerify(exactly = 1, verifyBlock = { createPaymentApi.execute(id, xUser, request) })
+        repository.createPayment(id, xUser, baseUrl, request)
+        coVerify(
+            exactly = 1,
+            verifyBlock = { createPaymentApi.execute(id, xUser, baseUrl, request) })
     }
 }
